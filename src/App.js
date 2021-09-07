@@ -3,6 +3,7 @@ import './App.css';
 
 import { useState, Component } from 'react';
 
+// class component
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -18,6 +19,14 @@ export default class App extends Component {
       </div>
     })
   }
+}
+
+// functional component
+function App(props) {
+  const [count, setCount] = useState(1);
+  return <div onClick={() => setCount(count + 1)}>
+    {count}
+  </div>
 }
 
 
