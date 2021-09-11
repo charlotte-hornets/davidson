@@ -6,9 +6,10 @@ export default class Shotchart extends Component {
   constructor(props) {
     super(props);
     var leagueid = 'coll';
-    this.current_x = 0;
-    this.current_y = 0;
     this.state = {
+        circle_show: false,
+        current_x: "N/A",
+        current_y: "N/A",
         threePointLineXY: [],
         chartSettings: {
         // all measurements are in feet...
@@ -258,22 +259,29 @@ export default class Shotchart extends Component {
   addCircle = (event) => {
     // get click coordinates
     let [x, y] = this.getClickCoords(event);
-    this.current_x = x
-    this.current_y = y
-    console.log(this.current_x, this.current_y);
-    }
+    this.setState((state, props) => {
+      return {current_x: x, current_y: y, circle_show: true}
+    });
+  }
 
   render() {
+    if (this.state.circle_show) {
+      return (
+        <div style={{width: '50%', display: "flex", margin: 'auto'}} onClick={this.addCircle}>
+            <svg ref={node => this.node = node}>
+                <circle fill="red" r="3" cx={this.state['current_x']} cy={this.state['current_y']}/>
+            </svg>
+        </div>
+        )
+    }
     return (
-    <div>
-      <svg>
-        <circle cx={this.current_x} cy={this.current_y}></circle>
-      </svg>
-      <div style={{width: '50%', display: "flex", margin: 'auto'}} onClick={this.addCircle}>
-          <svg ref={node => this.node = node}/>
-      </div>
-    </div>
-    )
+      <div>
+        <div style={{width: '50%', display: "flex", margin: 'auto'}} onClick={this.addCircle}>
+            <svg ref={node => this.node = node}/>
+        </div>
+      </div>)
+    
+
   }
 
   
