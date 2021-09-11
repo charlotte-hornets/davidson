@@ -1,38 +1,82 @@
-.App {
+.shot-chart-court *{
+  fill:transparent;
+  stroke: black;
+  stroke-width: 0.05
+}
+.shot-chart-court-ft-circle-bottom{
+  stroke-dasharray:1.5, 1
+}
+.shot-chart-court-hoop,.shot-chart-court-backboard{
+  z-index:100
+}
+.shot-chart-title{
+  font-size:15%;
+  text-transform:uppercase
+}
+
+#shotchart-page {
   text-align: center;
+  padding-top: 50px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.shotzone {
+  stroke: black;
+  fill-opacity: .7;
+  stroke-width: .08;
+  stroke-opacity: 1;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.shotchart-loading {
+width: 100%;
+align-items: center;
+display: flex;
+height: 90%;
+justify-content: center;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+text {
+font-size: .09vw;
+fill: #333333 !important
 }
 
-.App-link {
-  color: #61dafb;
+svg {
+width: 100%;
+display: block;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#shot-chart-legend rect {
+fill-opacity: .7;
+}
+
+#shot-chart-legend {
+padding-bottom: 1vw;
+}
+
+.right-corner-three-zone-text, .left-corner-three-zone-text {
+font-size: .05vw;
+}
+
+@media screen and (min-aspect-ratio: 11/8) {
+text {
+  font-size: .055vw;
+}
+
+svg {
+  width: 100%;
+  margin: 0;
+  padding-left: 6vw;
+  padding-right: 6vw;
+}
+}
+
+@media screen and (min-width: 1800px) {
+text {
+  font-size: .05vw;
+}
+}
+
+@media screen and (min-width: 2300px) {
+text {
+  font-size: .045vw;
+}
 }
