@@ -246,6 +246,10 @@ export default class Shotchart extends Component {
     this.drawCourt();
   }
 
+  componentDidUpdate() {
+    this.drawCourt();
+  }
+
 
   getClickCoords = (event) => {
     // from: https://stackoverflow.com/a/29296049/14198287
@@ -265,24 +269,11 @@ export default class Shotchart extends Component {
   }
 
   render() {
-    if (this.state.circle_show) {
-      return (
-        <div style={{width: '50%', display: "flex", margin: 'auto'}} onClick={this.addCircle}>
-            <svg ref={node => this.node = node}>
-                <circle fill="red" r="3" cx={this.state['current_x']} cy={this.state['current_y']}/>
-            </svg>
-        </div>
-        )
-    }
-    return (
-      <div>
-        <div style={{width: '50%', display: "flex", margin: 'auto'}} onClick={this.addCircle}>
-            <svg ref={node => this.node = node}/>
-        </div>
-      </div>)
-    
-
+    return <div style={{width: '50%', display: "flex", margin: 'auto'}} onClick={this.addCircle}>
+        <svg ref={node => this.node = node}>
+            {this.state.circle_show ? 
+              <circle fill="red" r="3" cx={this.state['current_x']} cy={this.state['current_y']}/> : null}
+        </svg>
+    </div>
   }
-
-  
 }
