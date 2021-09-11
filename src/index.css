@@ -1,31 +1,32 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
-.shot-chart-court *{
-  fill:transparent;
+.shot-chart-court * {
+  fill: transparent;
   stroke: black;
-  stroke-width: 0.05
+  stroke-width: 0.05;
 }
-.shot-chart-court-ft-circle-bottom{
-  stroke-dasharray:1.5, 1
+.shot-chart-court-ft-circle-bottom {
+  stroke-dasharray: 1.5, 1;
 }
-.shot-chart-court-hoop,.shot-chart-court-backboard{
-  z-index:100
+.shot-chart-court-hoop,
+.shot-chart-court-backboard {
+  z-index: 100;
 }
-.shot-chart-title{
-  font-size:15%;
-  text-transform:uppercase
+.shot-chart-title {
+  font-size: 15%;
+  text-transform: uppercase;
 }
 
 #shotchart-page {
@@ -35,8 +36,8 @@ code {
 
 .shotzone {
   stroke: black;
-  fill-opacity: .7;
-  stroke-width: .08;
+  fill-opacity: 0.7;
+  stroke-width: 0.08;
   stroke-opacity: 1;
 }
 
@@ -46,9 +47,10 @@ svg {
 }
 
 #shot-chart-legend rect {
-  fill-opacity: .7;
+  fill-opacity: 0.7;
 }
 
-.right-corner-three-zone-text, .left-corner-three-zone-text {
-  font-size: .05vw;
+.right-corner-three-zone-text,
+.left-corner-three-zone-text {
+  font-size: 0.05vw;
 }

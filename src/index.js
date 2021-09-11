@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Mapper from './components/clickmap';
+import Shotchart from './Shotchart/Shotchart';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
     <div>
-      <Mapper />
+      <Shotchart/>
     </div>,
   document.getElementById('root')
 );

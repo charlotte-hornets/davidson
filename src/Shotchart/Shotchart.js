@@ -6,6 +6,8 @@ export default class Shotchart extends Component {
   constructor(props) {
     super(props);
     var leagueid = 'coll';
+    this.current_x = 0;
+    this.current_y = 0;
     this.state = {
         threePointLineXY: [],
         chartSettings: {
@@ -74,6 +76,7 @@ export default class Shotchart extends Component {
     }
     }
   }
+
 
   // helper function to create an arcs (restricted, 3 point line, free throw circle)
   appendArcPath(base, radius, startAngle, endAngle, translateX, translateY, xyState) {
@@ -242,9 +245,36 @@ export default class Shotchart extends Component {
     this.drawCourt();
   }
 
+
+  getClickCoords = (event) => {
+    // from: https://stackoverflow.com/a/29296049/14198287
+    var e = event.target;
+    var dim = e.getBoundingClientRect();
+    var x = event.clientX - dim.left;
+    var y = event.clientY - dim.top;
+    return [x, y];
+  };
+
+  addCircle = (event) => {
+    // get click coordinates
+    let [x, y] = this.getClickCoords(event);
+    this.current_x = x
+    this.current_y = y
+    console.log(this.current_x, this.current_y);
+    }
+
   render() {
-    return <div style={{width: '50%', display: "flex", margin: 'auto'}}>
-        <svg ref={node => this.node = node}/>
+    return (
+    <div>
+      <svg>
+        <circle cx={this.current_x} cy={this.current_y}></circle>
+      </svg>
+      <div style={{width: '50%', display: "flex", margin: 'auto'}} onClick={this.addCircle}>
+          <svg ref={node => this.node = node}/>
+      </div>
     </div>
+    )
   }
+
+  
 }
