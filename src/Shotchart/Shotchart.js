@@ -263,16 +263,20 @@ export default class Shotchart extends Component {
   addCircle = (event) => {
     // get click coordinates
     let [x, y] = this.getClickCoords(event);
+    let box = document.getElementById('court-diagram').getBoundingClientRect();
+    let scale_x = x / box.width
+    let scale_y = y / box.height
     this.setState((state, props) => {
-      return {current_x: x, current_y: y, circle_show: true}
+      return {current_x: scale_x, current_y: scale_y, circle_show: true}
     });
   }
 
   render() {
-    return <div style={{width: '50%', display: "flex", margin: 'auto'}} onClick={this.addCircle}>
-        <svg ref={node => this.node = node}>
+    console.log(this.state['current_x'], this.state['current_y'])
+    return <div style={{width: '50%', display: "flex", margin: 'auto'}}>
+        <svg id="court-diagram" ref={node => this.node = node} onClick={this.addCircle}>
             {this.state.circle_show ? 
-              <circle fill="red" r="3" cx={this.state['current_x']} cy={this.state['current_y']}/> : null}
+              <g><circle fill="red" r="2%" cx={100*this.state['current_x'] + "%"} cy={100*this.state['current_y'] + "%"}/></g> : null}
         </svg>
     </div>
   }
