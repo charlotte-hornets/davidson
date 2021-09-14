@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import Index from './Index/Index.js';
 import Shotchart from './Shotchart/Shotchart.js';
+import Test from './test/Test.js';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Switch>
           <Route exact path="/" component={Index}/>
           <Route path="/shotchart" component ={Shotchart}/>
+          <Route path="/test" component ={Test}/>
         </Switch>
       </div>
     </Router>
