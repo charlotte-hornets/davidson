@@ -250,17 +250,9 @@ export default class Shotchart extends Component {
     this.drawCourt();
   }
 
-
-  getClickCoords = (event) => {
-    // from: https://stackoverflow.com/a/29296049/14198287
-    var e = event.target;
-    var x = event.clientX;
-    var y = event.clientY;
-    return [x, y];
-  };
-
   clicked = (evt) => {
-    let [x, y] = this.getClickCoords(evt);
+    // get click, convert to viewbox coordinates
+    const [x, y] = [evt.clientX, evt.clientY];
     const svg = document.getElementById('court-diagram');
     const pt = svg.createSVGPoint();
     pt.x = x;
