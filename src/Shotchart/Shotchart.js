@@ -254,29 +254,29 @@ export default class Shotchart extends Component {
   getClickCoords = (event) => {
     // from: https://stackoverflow.com/a/29296049/14198287
     var e = event.target;
-    var dim = e.getBoundingClientRect();
-    var x = event.clientX - dim.left;
-    var y = event.clientY - dim.top;
+    var x = event.clientX;
+    var y = event.clientY;
     return [x, y];
   };
 
-  addCircle = (event) => {
-    // get click coordinates
-    let [x, y] = this.getClickCoords(event);
-    let box = document.getElementById('court-diagram').getBoundingClientRect();
-    let scale_x = x / box.width
-    let scale_y = y / box.height
+  clicked = (evt) => {
+    let [x, y] = this.getClickCoords(evt);
+    const svg = document.getElementById('court-diagram');
+    const pt = svg.createSVGPoint();
+    pt.x = x;
+    pt.y = y;
+    const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
     this.setState((state, props) => {
-      return {current_x: scale_x, current_y: scale_y, circle_show: true}
-    });
-  }
+      return {current_x: svgP.x, current_y: svgP.y, circle_show: true}
+    }); 
+  }  
 
   render() {
     console.log(this.state['current_x'], this.state['current_y'])
     return <div style={{width: '50%', display: "flex", margin: 'auto'}}>
-        <svg id="court-diagram" ref={node => this.node = node} onClick={this.addCircle}>
+        <svg id="court-diagram" ref={node => this.node = node} onClick={this.clicked}>
             {this.state.circle_show ? 
-              <g><circle fill="red" r="2%" cx={100*this.state['current_x'] + "%"} cy={100*this.state['current_y'] + "%"}/></g> : null}
+              <g><circle fill="red" r="2%" cx={this.state['current_x']} cy={this.state['current_y']}/></g> : null}
         </svg>
     </div>
   }
