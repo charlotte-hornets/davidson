@@ -54,3 +54,8 @@ svg {
 .left-corner-three-zone-text {
   font-size: 0.05vw;
 }
+
+.team-select {
+  display: inline-block;
+  padding: 0px 15px;
+}
