@@ -272,13 +272,12 @@ export default class Shotchart extends Component {
   }
 
   render() {
-    console.log(this.state['popupShow'])
     return <div style={{width: '50%', display: "flex", margin: 'auto'}}>
         <svg id="court-diagram" ref={node => this.node = node} onClick={this.clicked}>
             {this.state.circle_show ? 
               <g><circle fill="black" r="2%" cx={this.state['current_x']} cy={this.state['current_y']}/></g> : null}
         </svg>
-        {this.state['popupShow'] ? <Popup header={"Data Entry"} content={"Put your data here"} closePopup={this.closeEntry} showClose={true}/> : null}
+        {this.state['popupShow'] ? <Popup header={"Data Entry"} content={"Put your data here"} closePopup={this.closeEntry} showClose={true} x_coord={this.state['current_x']} y_coord={this.state['current_y']}/> : null}
         
     </div>
   }
