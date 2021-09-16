@@ -12,6 +12,88 @@ code {
     monospace;
 }
 
+.popup {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.popup_inner {
+  background: white;
+  border-radius: 2vw;
+  width: 30%;
+  padding: 5vw 10vw 10vw 10vw;
+  position: absolute;
+}
+
+.close-button {
+  text-align: center;
+  float: right;
+  font-size: 1.5vw;
+  font-weight: 500;
+  color: #333333;
+  cursor: pointer;
+  position: absolute;
+  right: 2vw;
+  top: 1vw;
+  border-radius: 2vw;
+  border-width: 0.5vw;
+  border-color: #000000;
+}
+
+​h2 {
+  text-align: center;
+  font-weight: 100;
+  margin-right: 4vw;
+  margin-left: 4vw;
+  color: #00788c;
+}
+
+​.popup_inner input {
+  border-radius: 20px;
+  outline: none;
+  padding-left: 0.7vw;
+  padding-right: 0.7vw;
+  text-align: left;
+}
+​.popup_inner p {
+  text-align: center;
+  font-size: 1.5vw;
+}
+​.close-button:hover {
+  color: #000000;
+  cursor: pointer;
+}
+​.agent-input-inner input {
+  border-radius: 20px 0px 0px 20px;
+}
+​.player-input input {
+  border-radius: 20px 0px 0px 20px;
+}
+​.alertMessage {
+  text-align: center;
+}
+​input[type="text"]:disabled {
+  background: white;
+}
+​select:disabled {
+  background: #333333;
+  opacity: 1;
+}
+​textarea:disabled {
+  background: white;
+  opacity: 1;
+}
+
 .shot-chart-court * {
   fill: transparent;
   stroke: black;
@@ -24,6 +106,7 @@ code {
 .shot-chart-court-backboard {
   z-index: 100;
 }
+
 .shot-chart-title {
   font-size: 15%;
   text-transform: uppercase;
@@ -56,6 +139,15 @@ svg {
 }
 
 .team-select {
+  width: 20%;
   display: inline-block;
-  padding: 0px 15px;
+  padding: 0px 15px 15px 15px;
+}
+
+.shot-made {
+  display: inline-block;
+}
+
+.submit-button {
+  padding-top: 20px;
 }

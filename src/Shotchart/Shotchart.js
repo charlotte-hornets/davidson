@@ -1,12 +1,14 @@
 import React, { Component, Fragment } from "react";
 import * as d3 from 'd3'
 import Helpers from '../Utils/Helpers.js';
+import Popup from "./Popup.js";
 
 export default class Shotchart extends Component {
   constructor(props) {
     super(props);
     var leagueid = 'coll';
     this.state = {
+        popupShow: false,
         circle_show: false,
         current_x: "N/A",
         current_y: "N/A",
@@ -259,17 +261,25 @@ export default class Shotchart extends Component {
     pt.y = y;
     const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
     this.setState((state, props) => {
-      return {current_x: svgP.x, current_y: svgP.y, circle_show: true}
-    }); 
-  }  
+      return {current_x: svgP.x, current_y: svgP.y, circle_show: true, popupShow: true}
+    });
+  }
+  
+  closeEntry = () => {
+    this.setState(() => {
+      return {popupShow: false}
+    })
+  }
 
   render() {
-    console.log(this.state['current_x'], this.state['current_y'])
+    console.log(this.state['popupShow'])
     return <div style={{width: '50%', display: "flex", margin: 'auto'}}>
         <svg id="court-diagram" ref={node => this.node = node} onClick={this.clicked}>
             {this.state.circle_show ? 
-              <g><circle fill="red" r="2%" cx={this.state['current_x']} cy={this.state['current_y']}/></g> : null}
+              <g><circle fill="black" r="2%" cx={this.state['current_x']} cy={this.state['current_y']}/></g> : null}
         </svg>
+        {this.state['popupShow'] ? <Popup header={"Data Entry"} content={"Put your data here"} closePopup={this.closeEntry} showClose={true}/> : null}
+        
     </div>
   }
 }
