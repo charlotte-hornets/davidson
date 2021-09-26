@@ -12,9 +12,15 @@ const sample_roster = [
 ]
 
 export default function Popup(props) {
+
   let options = sample_roster.map(player => {
       return({label: ("#" + player['number'] + " " + player['playerName'] + " (" + player['team'] + ")"), value: player['playerId']});
   });
+
+  let dict = {};
+  const [counter, setCounter] = React.useState(1);
+  const incrementCounter = () => setCounter(counter + 1);
+  let values = [];
 
   const [checked, setChecked] = React.useState(true);
 
@@ -35,8 +41,8 @@ export default function Popup(props) {
       },
     },
   }));
-  
-  const classes= useStyles();  
+
+  const classes= useStyles();
 
   return <div className='popup'>
       <div className='popup_inner'>
@@ -44,7 +50,8 @@ export default function Popup(props) {
         <div>
           <h2>{props.header}</h2>
         </div>
-        <div>        
+
+        <div>
           <h4>Shooter:</h4>
           <Select
             id="shooter-selection"
@@ -61,6 +68,7 @@ export default function Popup(props) {
             ))}
           </Select>
         </div>
+
         <div>
           <div class="shot-made">
             <h4>Shot Made? </h4>
@@ -76,13 +84,18 @@ export default function Popup(props) {
             </Checkbox>
           </div>
         </div>
+
         <div class="submit-button">
-          <Button 
-            variant="contained" 
-            color="primary" 
+          <Button
+            variant="contained"
+            color="primary"
             onClick={() => {
-              console.log([props.x_coord, props.y_coord]);
-              console.log([selected, checked])
+              // console.log([selected, checked, props.x_coord, props.y_coord]);
+              values = [selected, checked, props.x_coord, props.y_coord];
+              incrementCounter();
+              dict[counter] = values;
+              console.log(counter);
+              console.log(dict);
               props.closePopup();
             }}>
             Submit
@@ -90,8 +103,8 @@ export default function Popup(props) {
         </div>
 
       </div>
-      
-        
+
+
 
   </div>
 };
