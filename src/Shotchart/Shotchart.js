@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import * as d3 from 'd3'
 import Helpers from '../Utils/Helpers.js';
 import Popup from "./Popup.js";
+import DataEntry from "./DataEntry.js"
 
 export default class Shotchart extends Component {
   constructor(props) {
@@ -12,6 +13,8 @@ export default class Shotchart extends Component {
         circle_show: false,
         current_x: "N/A",
         current_y: "N/A",
+        latest_shot: {},
+        shotList: [],
         threePointLineXY: [],
         chartSettings: {
         // all measurements are in feet...
@@ -271,13 +274,24 @@ export default class Shotchart extends Component {
     })
   }
 
+  updateShotList = (newData) => {
+    this.setState(prevList => {
+      return {
+        latest_shot: newData, 
+        shotList: [...prevList.shotList, newData]
+      }
+    })
+  }
+  
+
   render() {
+    console.log(this.state.shotList, this.state.latest_shot)
+    const circles = this.state.shotList.map(shot => <circle fill="#AC1A2F" r="2%" cx={shot['x_coord']} cy={shot['y_coord']}/>)
     return <div style={{width: '50%', display: "flex", margin: 'auto'}}>
         <svg id="court-diagram" ref={node => this.node = node} onClick={this.clicked}>
-            {this.state.circle_show ? 
-              <g><circle fill="black" r="2%" cx={this.state['current_x']} cy={this.state['current_y']}/></g> : null}
+            {this.state.circle_show ? circles: null}
         </svg>
-        {this.state['popupShow'] ? <Popup header={"Data Entry"} content={"Put your data here"} closePopup={this.closeEntry} showClose={true} x_coord={this.state['current_x']} y_coord={this.state['current_y']}/> : null}
+        {this.state['popupShow'] ? <Popup header={"Data Entry"} closePopup={this.closeEntry} content={<DataEntry x_coord={this.state['current_x']} y_coord={this.state['current_y']} submitData={this.updateShotList} closePopup={this.closeEntry} showClose={true}/>} showClose={true}/> : null}
         
     </div>
   }

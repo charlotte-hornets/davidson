@@ -31,7 +31,8 @@ code {
   background: white;
   border-radius: 2vw;
   width: 30%;
-  padding: 5vw 10vw 10vw 10vw;
+  height: 80%;
+  padding: 2vw 10vw 5vw 10vw;
   position: absolute;
 }
 
@@ -144,10 +145,15 @@ svg {
   padding: 0px 15px 15px 15px;
 }
 
-.shot-made {
+.top-question {
   display: inline-block;
+  padding: 0% 2%;
 }
 
 .submit-button {
   padding-top: 20px;
+}
+
+.shot-type {
+  width: 100%;
 }

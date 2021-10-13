@@ -10,7 +10,7 @@ let teamDict = teamsArray.map(team => {
 
 export default function TeamSelection(props) {
     return (
-    <div class="team-select">
+    <div className="team-select">
         <h4>{props.name}</h4>
         <TextField
           select
