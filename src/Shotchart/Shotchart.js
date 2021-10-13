@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import * as d3 from 'd3'
 import Helpers from '../Utils/Helpers.js';
 import Popup from "./Popup.js";
@@ -195,12 +195,12 @@ export default class Shotchart extends Component {
 
     // create in paint free throw circle (dashed - css)
 
-    if (o.league == 'nba'){
+    if (o.league === 'nba'){
       this.appendArcPath(base, o.freeThrowCircleRadius, Math.PI/2, 1.5 * Math.PI)
         .attr('class', 'shot-chart-court-ft-circle-bottom')
         .attr("transform", "translate(" + (o.courtWidth / 2) + ", " +
           (o.visibleCourtLength - o.freeThrowLineLength) + ")");
-    } else if (o.league == 'coll') {
+    } else if (o.league === 'coll') {
       // lane block (college)
       base.append("rect")
         .attr('class', 'shot-chart-court-key-block')
@@ -286,7 +286,7 @@ export default class Shotchart extends Component {
 
   render() {
     console.log(this.state.shotList, this.state.latest_shot)
-    const circles = this.state.shotList.map(shot => <circle fill="#AC1A2F" r="2%" cx={shot['x_coord']} cy={shot['y_coord']}/>)
+    const circles = this.state.shotList.map((shot, index) => <circle key={index+1} fill="#AC1A2F" r="2%" cx={shot['x_coord']} cy={shot['y_coord']}/>)
     return <div style={{width: '50%', display: "flex", margin: 'auto'}}>
         <svg id="court-diagram" ref={node => this.node = node} onClick={this.clicked}>
             {this.state.circle_show ? circles: null}

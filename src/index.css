@@ -70,6 +70,20 @@ code {
   text-align: center;
   font-size: 1.5vw;
 }
+.top-question {
+  display: inline-block;
+  padding: 0% 2% 0% 2%;
+}
+
+.data-entry {
+  max-height: 45vw;
+  overflow-y: auto;
+}
+
+.submit-button {
+  padding-top: 2vw;
+}
+
 ​.close-button:hover {
   color: #000000;
   cursor: pointer;
@@ -143,17 +157,4 @@ svg {
   width: 20%;
   display: inline-block;
   padding: 0px 15px 15px 15px;
-}
-
-.top-question {
-  display: inline-block;
-  padding: 0% 2%;
-}
-
-.submit-button {
-  padding-top: 20px;
-}
-
-.shot-type {
-  width: 100%;
 }

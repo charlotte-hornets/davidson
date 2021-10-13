@@ -1,13 +1,10 @@
-import React, {useState} from "react";
-import { makeStyles } from '@material-ui/core/styles';
+import React from "react";
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 
 const sample_roster = [
     {playerName: "Stephen Curry", playerId: "stcurry01", number: "30", team:"Warriors"},
@@ -22,43 +19,35 @@ export default function DataEntry(props) {
 
     let values = {}
 
-    const [wasMade, setWasMade] = React.useState(null);
-    const handleWasMadeChange = (event) => {
-      setWasMade(event.target.value);
-    };
-
-    const [selected, setSelected] = React.useState(null)
+    const [selected, setSelected] = React.useState("")
     const handleSelectChange = (event) =>{
       setSelected(event.target.value)
     }
 
-    const [contested, setContested] = React.useState(null)
+    const [wasMade, setWasMade] = React.useState("1");
+    const handleWasMadeChange = (event) => {
+      setWasMade(event.target.value);
+    };
+
+    const [contested, setContested] = React.useState("1");
     const handleContestedChange = (event) =>{
       setContested(event.target.value)
     }
 
-    const [shotType, setShotType] = React.useState(null)
+    const [shotType, setShotType] = React.useState("1");
     const handleSelectShotType = (event) =>{
       setShotType(event.target.value)
     }
 
-    const useStyles = makeStyles((theme) => ({
-      root: {
-        '& > *': {
-          margin: theme.spacing(1),
-        },
-      },
-    }));
-    const classes= useStyles();
 
 
     return (
         <div>
+            <div className="data-entry">
             <div>
                 <h4>Shooter:</h4>
                 <Select 
                     id="shooter-selection"
-                    select
                     fullWidth
                     label="Select"
                     value={selected}
@@ -71,11 +60,11 @@ export default function DataEntry(props) {
                 ))}
                 </Select>
             </div>
-            <div class="top-question">
-                <div class="shot-made">
+            <div className="top-question">
+                <div className="shot-made">
                     <h4>Shot Made?</h4>
                 </div>
-                <div class="shot-made">
+                <div className="shot-made">
                     <RadioGroup 
                         aria-label="made?"
                         defaultValue="1"
@@ -87,11 +76,11 @@ export default function DataEntry(props) {
                     </RadioGroup>
                 </div>
             </div>
-            <div class="top-question">
-                <div class="contest">
+            <div className="top-question">
+                <div className="contest">
                     <h4>Shot Contest?</h4>
                 </div>
-                <div class="contest">
+                <div className="contest">
                     <RadioGroup 
                         aria-label="contested?"
                         defaultValue="1"
@@ -104,11 +93,11 @@ export default function DataEntry(props) {
                 </div>
             </div>
 
-            <div class="bottom-question">
-                <div class="shot-type">
+            <div className="bottom-question">
+                <div className="shot-type">
                     <h4>Shot Type:</h4>
                 </div>
-                <div class="shot-type">
+                <div className="shot-type">
                     <RadioGroup 
                         row
                         aria-label="contested?"
@@ -124,9 +113,9 @@ export default function DataEntry(props) {
                     </RadioGroup>
                 </div>
             </div>
+            </div>
 
-
-            <div class="submit-button">
+            <div className="submit-button">
                 <Button
                     variant="contained"
                     color="secondary"
@@ -134,9 +123,9 @@ export default function DataEntry(props) {
                         // console.log([selected, checked, props.x_coord, props.y_coord]);
                         values = {
                             playerId: selected, 
-                            shotMade: wasMade,
-                            contested: contested,
-                            shotType: shotType,
+                            shotMade: parseInt(wasMade),
+                            contested: parseInt(contested),
+                            shotType: parseInt(shotType),
                             x_coord: props.x_coord,
                             y_coord: props.y_coord}
                         props.submitData(values);
