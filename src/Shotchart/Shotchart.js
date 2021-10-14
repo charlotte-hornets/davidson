@@ -2,18 +2,22 @@ import React, { Component } from "react";
 import * as d3 from 'd3'
 import Helpers from '../Utils/Helpers.js';
 import Popup from "./Popup.js";
-import DataEntry from "./DataEntry.js"
+import DataEntry from "./DataEntry.js";
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
 
 export default class Shotchart extends Component {
   constructor(props) {
     super(props);
     var leagueid = 'coll';
     this.state = {
+        multipleShotView: false,
         popupShow: false,
         circle_show: false,
         current_x: "N/A",
         current_y: "N/A",
-        latest_shot: {},
+        latest_shot: {"x_coord": null, "y_coord": null},
         shotList: [],
         threePointLineXY: [],
         chartSettings: {
@@ -264,7 +268,7 @@ export default class Shotchart extends Component {
     pt.y = y;
     const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
     this.setState((state, props) => {
-      return {current_x: svgP.x, current_y: svgP.y, circle_show: true, popupShow: true}
+      return {current_x: svgP.x, current_y: svgP.y, popupShow: true}
     });
   }
   
@@ -282,17 +286,33 @@ export default class Shotchart extends Component {
       }
     })
   }
+
+  updateMultipleShot = () => {
+    this.setState((pastState) => {
+      return {multipleShotView: !pastState.multipleShotView}
+    })
+  }
+
+  updateCircleShow = () => {
+    this.setState(() => {
+      return {circle_show: true}
+    })
+  }
   
 
   render() {
-    console.log(this.state.shotList, this.state.latest_shot)
-    const circles = this.state.shotList.map((shot, index) => <circle key={index+1} fill="#AC1A2F" r="2%" cx={shot['x_coord']} cy={shot['y_coord']}/>)
-    return <div style={{width: '50%', display: "flex", margin: 'auto'}}>
-        <svg id="court-diagram" ref={node => this.node = node} onClick={this.clicked}>
-            {this.state.circle_show ? circles: null}
-        </svg>
-        {this.state['popupShow'] ? <Popup header={"Data Entry"} closePopup={this.closeEntry} content={<DataEntry x_coord={this.state['current_x']} y_coord={this.state['current_y']} submitData={this.updateShotList} closePopup={this.closeEntry} showClose={true}/>} showClose={true}/> : null}
-        
+    let circles = this.state.multipleShotView ? this.state.shotList.map((shot, index) => <circle key={index+1} fill={shot['shotMade'] === 1 ? "green" : "red"} r="2%" cx={shot['x_coord']} cy={shot['y_coord']}/>) : this.state.circle_show ? <circle fill={this.state.shotList.at(-1)['shotMade'] === 1 ? "green" : "red"} r="2%" cx={this.state.shotList.at(-1)['x_coord']} cy={this.state.shotList.at(-1)['y_coord']}/> : null;
+    return <div>
+      <div className="settings">
+        <h2>Settings</h2>
+        <div className="display-switch">
+            <FormControlLabel control={<Switch onClick={this.updateMultipleShot} value={this.state.multipleShotView}/>} label="Multiple Shot View"/>
+        </div>
+      </div>
+      <div style={{width: '50%', display: "flex", margin: 'auto'}}>
+        <svg id="court-diagram" ref={node => this.node = node} onClick={this.clicked}>{this.state.circle_show ? circles: null}</svg>
+        {this.state['popupShow'] ? <Popup header={"Data Entry"} closePopup={this.closeEntry} content={<DataEntry x_coord={this.state['current_x']} y_coord={this.state['current_y']} submitData={this.updateShotList} showCircle={this.updateCircleShow} closePopup={this.closeEntry} showClose={true}/>} showClose={true}/> : null}
+      </div>
     </div>
   }
 }

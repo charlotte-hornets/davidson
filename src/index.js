@@ -2,13 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import Shotchart from './Shotchart/Shotchart';
-import TeamSelection from './Rosters/TeamSelect';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
     <div>
-      <TeamSelection name="Home/Neutral Team"/>
-      <TeamSelection name="Away/Neutral Team"/>
       <Shotchart/>
     </div>,
   document.getElementById('root')

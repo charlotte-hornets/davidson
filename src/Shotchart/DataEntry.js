@@ -4,7 +4,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { InputLabel } from "@material-ui/core";
 
 const sample_roster = [
     {playerName: "Stephen Curry", playerId: "stcurry01", number: "30", team:"Warriors"},
@@ -39,16 +41,13 @@ export default function DataEntry(props) {
       setShotType(event.target.value)
     }
 
-
-
     return (
         <div>
             <div className="data-entry">
-            <div>
-                <h4>Shooter:</h4>
+            <FormControl required fullWidth>
+                <InputLabel id="shooter-selection">Shooter</InputLabel>
                 <Select 
                     id="shooter-selection"
-                    fullWidth
                     label="Select"
                     value={selected}
                     onChange={handleSelectChange}
@@ -59,7 +58,7 @@ export default function DataEntry(props) {
                     </MenuItem>
                 ))}
                 </Select>
-            </div>
+            </FormControl>
             <div className="top-question">
                 <div className="shot-made">
                     <h4>Shot Made?</h4>
@@ -114,22 +113,25 @@ export default function DataEntry(props) {
                 </div>
             </div>
             </div>
-
             <div className="submit-button">
                 <Button
                     variant="contained"
                     color="secondary"
                     onClick={() => {
+                        console.log(selected)
                         // console.log([selected, checked, props.x_coord, props.y_coord]);
-                        values = {
-                            playerId: selected, 
-                            shotMade: parseInt(wasMade),
-                            contested: parseInt(contested),
-                            shotType: parseInt(shotType),
-                            x_coord: props.x_coord,
-                            y_coord: props.y_coord}
-                        props.submitData(values);
-                        props.closePopup();
+                        if (selected != "") {
+                            values = {
+                                playerId: selected, 
+                                shotMade: parseInt(wasMade),
+                                contested: parseInt(contested),
+                                shotType: parseInt(shotType),
+                                x_coord: props.x_coord,
+                                y_coord: props.y_coord}
+                            props.submitData(values);
+                            props.showCircle();
+                            props.closePopup();
+                        }
                     }
                     }
                 >Submit</Button>
