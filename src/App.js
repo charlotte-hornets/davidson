@@ -15,7 +15,7 @@ export default function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
-          <Route exact path="/" component={Index}/>
+          <Route exact={true} path="/" component={Index}/>
           <Route path="/shotchart" component ={Shotchart}/>
           <Route path="/test" component ={Test}/>
         </Switch>
@@ -23,4 +23,3 @@ export default function App() {
     </Router>
   );
 }
-
