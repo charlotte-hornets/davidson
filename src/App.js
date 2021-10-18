@@ -1,32 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
+import Index from './Index/Index.js';
+import Shotchart from './Shotchart/Shotchart.js';
+import Test from './test/Test.js';
 
-import { useState, Component } from 'react';
-
-// class component
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      count: 1
-    }
-  }
-
-  render() {
-    return [1, 2, 3, 4].map((i) => {
-      return <div key={i} onClick={() => this.setState({count: this.state.count + 1})}>
-        {i} Count {this.state.count}
+export default function App() {
+  return (
+    <Router>
+      <div>
+        {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+        <Switch>
+          <Route exact path="/" component={Index}/>
+          <Route path="/shotchart" component ={Shotchart}/>
+          <Route path="/test" component ={Test}/>
+        </Switch>
       </div>
-    })
-  }
+    </Router>
+  );
 }
-
-// functional component
-function App(props) {
-  const [count, setCount] = useState(1);
-  return <div onClick={() => setCount(count + 1)}>
-    {count}
-  </div>
-}
-
 

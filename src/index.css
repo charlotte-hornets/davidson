@@ -1,13 +1,164 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.popup {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.popup_inner {
+  background: white;
+  border-radius: 2vw;
+  width: 30%;
+  height: 80%;
+  padding: 2vw 10vw 5vw 10vw;
+  position: absolute;
+}
+
+.close-button {
+  text-align: center;
+  float: right;
+  font-size: 1.5vw;
+  font-weight: 500;
+  color: #333333;
+  cursor: pointer;
+  position: absolute;
+  right: 2vw;
+  top: 1vw;
+  border-radius: 2vw;
+  border-width: 0.5vw;
+  border-color: #000000;
+}
+
+​h2 {
+  text-align: center;
+  font-weight: 100;
+  margin-right: 4vw;
+  margin-left: 4vw;
+  color: #00788c;
+}
+
+​.popup_inner input {
+  border-radius: 20px;
+  outline: none;
+  padding-left: 0.7vw;
+  padding-right: 0.7vw;
+  text-align: left;
+}
+​.popup_inner p {
+  text-align: center;
+  font-size: 1.5vw;
+}
+.top-question {
+  display: inline-block;
+  padding-right: 2%;
+}
+
+.data-entry {
+  max-height: 45vw;
+  overflow-y: auto;
+}
+
+.submit-button {
+  padding-top: 2vw;
+}
+
+​.close-button:hover {
+  color: #000000;
+  cursor: pointer;
+}
+​.agent-input-inner input {
+  border-radius: 20px 0px 0px 20px;
+}
+​.player-input input {
+  border-radius: 20px 0px 0px 20px;
+}
+​.alertMessage {
+  text-align: center;
+}
+​input[type="text"]:disabled {
+  background: white;
+}
+​select:disabled {
+  background: #333333;
+  opacity: 1;
+}
+​textarea:disabled {
+  background: white;
+  opacity: 1;
+}
+
+.shot-chart-court * {
+  fill: transparent;
+  stroke: black;
+  stroke-width: 0.05;
+}
+.shot-chart-court-ft-circle-bottom {
+  stroke-dasharray: 1.5, 1;
+}
+.shot-chart-court-hoop,
+.shot-chart-court-backboard {
+  z-index: 100;
+}
+
+.shot-chart-title {
+  font-size: 15%;
+  text-transform: uppercase;
+}
+
+#shotchart-page {
+  text-align: center;
+  padding-top: 50px;
+}
+
+.shotzone {
+  stroke: black;
+  fill-opacity: 0.7;
+  stroke-width: 0.08;
+  stroke-opacity: 1;
+}
+
+svg {
+  display: block;
+  margin: auto;
+}
+
+#shot-chart-legend rect {
+  fill-opacity: 0.7;
+}
+
+.right-corner-three-zone-text,
+.left-corner-three-zone-text {
+  font-size: 0.05vw;
+}
+
+.team-select {
+  width: 20%;
+  display: inline-block;
+  padding: 0px 15px 15px 15px;
+}
+
+.settings {
+  padding: 15px;
 }
