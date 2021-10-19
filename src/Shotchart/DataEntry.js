@@ -21,6 +21,8 @@ export default function DataEntry(props) {
 
     let values = {}
 
+    const [alert, setAlert] = useState({show: false});
+
     const [selected, setSelected] = React.useState("")
     const handleSelectChange = (event) =>{
       setSelected(event.target.value)
@@ -118,6 +120,8 @@ export default function DataEntry(props) {
                     variant="contained"
                     color="secondary"
                     onClick={() => {
+                        // run  the form validation logic here & display an error message if anything is missing
+
                         console.log(selected)
                         // console.log([selected, checked, props.x_coord, props.y_coord]);
                         if (selected != "") {
@@ -131,11 +135,15 @@ export default function DataEntry(props) {
                             props.submitData(values);
                             props.showCircle();
                             props.closePopup();
+                        } else {
+                            // call here
                         }
                     }
                     }
                 >Submit</Button>
             </div>
+            {alert.show ? <Popup header={"Error"} closePopup={() => setAlert({show: false})} 
+                content={<p>Check your input.</p>} showClose={true}/> : null}
         </div>
         )
   }

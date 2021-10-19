@@ -16,4 +16,28 @@ export default class Helpers {
 
         return {nba: nba, coll: coll};
     }
+
+    static fetchMethod(url, method, data) {
+        let base = 'https://api.thehornetsnest.io';
+        // add credentials here for authentication
+        return fetch(base + url, {
+            method: method,
+            body: data,
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json, text/plain, */*',
+                'X-CSRFToken': this.getCsrftoken()
+            }
+        })
+    }
+
+    static getFetch(url) {
+        return this.fetchMethod(url, "GET", null);
+    }
+
+    static postFetch(url, data) {
+        return this.fetchMethod(url, "POST", data);
+    }
+
+
 }

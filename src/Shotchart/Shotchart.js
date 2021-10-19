@@ -253,6 +253,18 @@ export default class Shotchart extends Component {
 
   componentDidMount() {
     this.drawCourt();
+    // grab our players and teams for selecting a shot
+    // next steps: call the player API when a team is selected
+    // /players?teamid={teamid}
+    Helpers.getFetch('/teams?leaguelevel=NCAA1')
+    .then(res => {
+      res.json().then(data => {
+        console.log(data);
+        this.setState({
+          teams: data
+        })
+      })
+    })
   }
 
   componentDidUpdate() {
