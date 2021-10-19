@@ -264,6 +264,8 @@ export default class Shotchart extends Component {
           teams: data
         })
       })
+    }).catch(err => {
+      console.log(err);
     })
   }
 

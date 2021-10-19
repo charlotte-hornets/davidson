@@ -1,3 +1,5 @@
+import { encode } from "base-64";
+
 export default class Helpers {
     constructor(props) {
 
@@ -19,14 +21,13 @@ export default class Helpers {
 
     static fetchMethod(url, method, data) {
         let base = 'https://api.thehornetsnest.io';
-        // add credentials here for authentication
         return fetch(base + url, {
             method: method,
             body: data,
             headers: {
                 'Content-type': 'application/json',
                 'Accept': 'application/json, text/plain, */*',
-                'X-CSRFToken': this.getCsrftoken()
+                'Authorization': 'Basic ' + encode('username:password')
             }
         })
     }

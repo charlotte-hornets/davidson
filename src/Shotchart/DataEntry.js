@@ -7,6 +7,8 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { InputLabel } from "@material-ui/core";
+import Popup from "./Popup";
+import { useState } from "react";
 
 const sample_roster = [
     {playerName: "Stephen Curry", playerId: "stcurry01", number: "30", team:"Warriors"},
