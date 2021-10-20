@@ -27,7 +27,7 @@ export default class Helpers {
             headers: {
                 'Content-type': 'application/json',
                 'Accept': 'application/json, text/plain, */*',
-                'Authorization': 'Basic ' + encode('username:password')
+                'Authorization': 'Basic ' + encode('dbeamer:rythyk-2sykmu-xaqrEr')
             }
         })
     }

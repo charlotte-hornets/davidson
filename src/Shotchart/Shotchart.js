@@ -5,6 +5,7 @@ import Popup from "./Popup.js";
 import DataEntry from "./DataEntry.js";
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import TeamSelection from "./TeamSelect.js";
 
 
 export default class Shotchart extends Component {
@@ -12,6 +13,11 @@ export default class Shotchart extends Component {
     super(props);
     var leagueid = 'coll';
     this.state = {
+        teams: {},
+        team1: null,
+        team2: null,
+        team1players: [],
+        team2players: [],
         multipleShotView: false,
         popupShow: false,
         circle_show: false,
@@ -312,21 +318,58 @@ export default class Shotchart extends Component {
       return {circle_show: true}
     })
   }
-  
+
+  updateTeam1 = (newTeam) => {
+    Helpers.getFetch('/players?teamid=' + newTeam + '&seasonyear_mostrecentcollege=2021')
+    .then(res => {
+      res.json().then(data => {
+        console.log(data);
+        this.setState({
+          team1: newTeam,
+          team1players: data
+        })
+      })
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+
+  updateTeam2 = (newTeam) => {
+    Helpers.getFetch('/players?teamid=' + newTeam + '&seasonyear_mostrecentcollege=2021')
+    .then(res => {
+      res.json().then(data => {
+        this.setState({
+          team2: newTeam,
+          team2players: data
+        })
+      })
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+
 
   render() {
     let circles = this.state.multipleShotView ? this.state.shotList.map((shot, index) => <circle key={index+1} fill={shot['shotMade'] === 1 ? "green" : "red"} r="2%" cx={shot['x_coord']} cy={shot['y_coord']}/>) : this.state.circle_show ? <circle fill={this.state.shotList.at(-1)['shotMade'] === 1 ? "green" : "red"} r="2%" cx={this.state.shotList.at(-1)['x_coord']} cy={this.state.shotList.at(-1)['y_coord']}/> : null;
-    return <div>
+    const players = this.state.team1players.concat(this.state.team2players)
+    return this.state.teams.length ? (<div>
+      <div className="team-selection">
+        <TeamSelection name="Home/Neutral" teams={this.state.teams} changeTeam={this.updateTeam1}></TeamSelection>
+        <TeamSelection name="Away/Neutral" teams={this.state.teams} changeTeam={this.updateTeam2}></TeamSelection>
+      </div>
+
       <div className="settings">
         <h2>Settings</h2>
-        <div className="display-switch">
-            <FormControlLabel control={<Switch onClick={this.updateMultipleShot} value={this.state.multipleShotView}/>} label="Multiple Shot View"/>
+        <div>
+            <FormControlLabel className="display-switch" control={<Switch color="error" onClick={this.updateMultipleShot} value={this.state.multipleShotView}/>} label="Multiple Shot View"/>
         </div>
       </div>
+
       <div style={{width: '50%', display: "flex", margin: 'auto'}}>
         <svg id="court-diagram" ref={node => this.node = node} onClick={this.clicked}>{this.state.circle_show ? circles: null}</svg>
-        {this.state['popupShow'] ? <Popup header={"Data Entry"} closePopup={this.closeEntry} content={<DataEntry x_coord={this.state['current_x']} y_coord={this.state['current_y']} submitData={this.updateShotList} showCircle={this.updateCircleShow} closePopup={this.closeEntry} showClose={true}/>} showClose={true}/> : null}
+        {this.state['popupShow'] ? <Popup header={"Data Entry"} closePopup={this.closeEntry} content={<DataEntry players={players} x_coord={this.state['current_x']} y_coord={this.state['current_y']} submitData={this.updateShotList} showCircle={this.updateCircleShow} closePopup={this.closeEntry} showClose={true}/>} showClose={true}/> : null}
       </div>
-    </div>
+
+    </div>): <div>Loading...</div>
   }
 }
