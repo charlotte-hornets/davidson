@@ -5,7 +5,7 @@ import Popup from "./Popup.js";
 import DataEntry from "./DataEntry.js";
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import TeamSelection from "./TeamSelect.js";
+import { Redirect } from "react-router";
 import {Link, useLocation} from "react-router-dom";
 
 
@@ -14,12 +14,11 @@ export default class Shotchart extends Component {
     super(props);
     var leagueid = 'coll';
     this.state = {
-        sessionID: this.props.location.state.sessionID,
-        teams: {},
+        hasSessionInfo: true,
+        sessionID: null,
         team1: null,
         team2: null,
-        team1players: [],
-        team2players: [],
+        players: [],
         multipleShotView: false,
         popupShow: false,
         circle_show: false,
@@ -264,17 +263,16 @@ export default class Shotchart extends Component {
     // grab our players and teams for selecting a shot
     // next steps: call the player API when a team is selected
     // /players?teamid={teamid}
-    Helpers.getFetch('/team/seasons?leagueid=COLL&seasonyear=2021')
-    .then(res => {
-      res.json().then(data => {
-        console.log(data);
-        this.setState({
-          teams: data
-        })
+
+    try {
+      this.updateSessionInfo();
+    } catch (error) {
+      this.setState(() => {
+        return {hasSessionInfo: false}
       })
-    }).catch(err => {
-      console.log(err);
-    })
+      console.log(error)
+      console.log("BIG ERROR")
+    }
   }
 
   componentDidUpdate() {
@@ -321,45 +319,22 @@ export default class Shotchart extends Component {
     })
   }
 
-  updateTeam1 = (newTeam) => {
-    Helpers.getFetch('/team/roster?teamid=' + newTeam + '&seasonyear=2021')
-    .then(res => {
-      res.json().then(data => {
-        console.log(data);
-        this.setState({
-          team1: newTeam,
-          team1players: data
-        })
-      })
-    }).catch(err => {
-      console.log(err);
-    })
-  }
 
-  updateTeam2 = (newTeam) => {
-    Helpers.getFetch('/team/roster?teamid=' + newTeam + '&seasonyear=2021')
-    .then(res => {
-      res.json().then(data => {
-        this.setState({
-          team2: newTeam,
-          team2players: data
-        })
-      })
-    }).catch(err => {
-      console.log(err);
+  updateSessionInfo = () => {
+    this.setState({
+      sessionID: this.props.location.state.sessionID,
+      players: this.props.location.state.players,
+      team1: this.props.location.state.team1,
+      team2: this.props.location.state.team2,
+      hasSessionInfo: true
     })
   }
 
 
   render() {
+    console.log(this.state.hasSessionInfo)
     let circles = this.state.multipleShotView ? this.state.shotList.map((shot, index) => <circle key={index+1} fill={shot['shotMade'] === 1 ? "green" : "red"} r="2%" cx={shot['x_coord']} cy={shot['y_coord']}/>) : this.state.circle_show ? <circle fill={this.state.latest_shot['shotMade'] === 1 ? "green" : "red"} r="2%" cx={this.state.latest_shot['x_coord']} cy={this.state.latest_shot['y_coord']}/> : null;
-    const players = this.state.team1players.concat(this.state.team2players)
-    console.log(this.state.sessionID)
-    return this.state.teams.length ? (<div>
-      <div className="team-selection">
-        <TeamSelection name="Home/Neutral" teams={this.state.teams} changeTeam={this.updateTeam1}></TeamSelection>
-        <TeamSelection name="Away/Neutral" teams={this.state.teams} changeTeam={this.updateTeam2}></TeamSelection>
-      </div>
+    return this.state.hasSessionInfo ? (<div>
 
       <div className="settings">
         <h2>Settings</h2>
@@ -370,9 +345,9 @@ export default class Shotchart extends Component {
 
       <div style={{width: '50%', display: "flex", margin: 'auto'}}>
         <svg id="court-diagram" ref={node => this.node = node} onClick={this.clicked}>{this.state.circle_show ? circles: null}</svg>
-        {this.state['popupShow'] ? <Popup header={"Data Entry"} closePopup={this.closeEntry} content={<DataEntry players={players} x_coord={this.state['current_x']} y_coord={this.state['current_y']} submitData={this.updateShotList} showCircle={this.updateCircleShow} closePopup={this.closeEntry} showClose={true}/>} showClose={true}/> : null}
+        {this.state['popupShow'] ? <Popup header={"Data Entry"} closePopup={this.closeEntry} content={<DataEntry players={this.state.players} x_coord={this.state['current_x']} y_coord={this.state['current_y']} submitData={this.updateShotList} showCircle={this.updateCircleShow} closePopup={this.closeEntry} showClose={true}/>} showClose={true}/> : null}
       </div>
 
-    </div>): <div>Loading...</div>
+    </div>) : <Redirect to="/" />;
   }
 }
