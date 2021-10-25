@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Shotchart from './Shotchart/Shotchart';
+import App from './App.js'
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
     <div>
-      <Shotchart/>
+      <App />
     </div>,
   document.getElementById('root')
 );

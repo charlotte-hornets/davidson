@@ -6,6 +6,7 @@ import DataEntry from "./DataEntry.js";
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TeamSelection from "./TeamSelect.js";
+import {Link, useLocation} from "react-router-dom";
 
 
 export default class Shotchart extends Component {
@@ -13,6 +14,7 @@ export default class Shotchart extends Component {
     super(props);
     var leagueid = 'coll';
     this.state = {
+        sessionID: this.props.location.state.sessionID,
         teams: {},
         team1: null,
         team2: null,
@@ -262,7 +264,7 @@ export default class Shotchart extends Component {
     // grab our players and teams for selecting a shot
     // next steps: call the player API when a team is selected
     // /players?teamid={teamid}
-    Helpers.getFetch('/teams?leaguelevel=NCAA1')
+    Helpers.getFetch('/team/seasons?leagueid=COLL&seasonyear=2021')
     .then(res => {
       res.json().then(data => {
         console.log(data);
@@ -320,7 +322,7 @@ export default class Shotchart extends Component {
   }
 
   updateTeam1 = (newTeam) => {
-    Helpers.getFetch('/players?teamid=' + newTeam + '&seasonyear_mostrecentcollege=2021')
+    Helpers.getFetch('/team/roster?teamid=' + newTeam + '&seasonyear=2021')
     .then(res => {
       res.json().then(data => {
         console.log(data);
@@ -335,7 +337,7 @@ export default class Shotchart extends Component {
   }
 
   updateTeam2 = (newTeam) => {
-    Helpers.getFetch('/players?teamid=' + newTeam + '&seasonyear_mostrecentcollege=2021')
+    Helpers.getFetch('/team/roster?teamid=' + newTeam + '&seasonyear=2021')
     .then(res => {
       res.json().then(data => {
         this.setState({
@@ -350,8 +352,9 @@ export default class Shotchart extends Component {
 
 
   render() {
-    let circles = this.state.multipleShotView ? this.state.shotList.map((shot, index) => <circle key={index+1} fill={shot['shotMade'] === 1 ? "green" : "red"} r="2%" cx={shot['x_coord']} cy={shot['y_coord']}/>) : this.state.circle_show ? <circle fill={this.state.shotList.at(-1)['shotMade'] === 1 ? "green" : "red"} r="2%" cx={this.state.shotList.at(-1)['x_coord']} cy={this.state.shotList.at(-1)['y_coord']}/> : null;
+    let circles = this.state.multipleShotView ? this.state.shotList.map((shot, index) => <circle key={index+1} fill={shot['shotMade'] === 1 ? "green" : "red"} r="2%" cx={shot['x_coord']} cy={shot['y_coord']}/>) : this.state.circle_show ? <circle fill={this.state.latest_shot['shotMade'] === 1 ? "green" : "red"} r="2%" cx={this.state.latest_shot['x_coord']} cy={this.state.latest_shot['y_coord']}/> : null;
     const players = this.state.team1players.concat(this.state.team2players)
+    console.log(this.state.sessionID)
     return this.state.teams.length ? (<div>
       <div className="team-selection">
         <TeamSelection name="Home/Neutral" teams={this.state.teams} changeTeam={this.updateTeam1}></TeamSelection>

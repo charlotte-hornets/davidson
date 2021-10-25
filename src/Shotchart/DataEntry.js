@@ -14,7 +14,7 @@ import { useState } from "react";
 
 export default function DataEntry(props) {
     let options = props.players.map(player => {
-      return({label: ("#" + player['jersey'] + " " + player['personname'] + " (" + player['teamname'] + ")"), value: player['personid']});
+      return({label: (player['personname'] + " #" + player['rosterjerseynumber'] + " (" + player['college'] + ")"), value: player['personteamseasonid']});
     });
 
     let values = {}
@@ -122,7 +122,7 @@ export default function DataEntry(props) {
                         // console.log([selected, checked, props.x_coord, props.y_coord]);
                         if (selected != "") {
                             values = {
-                                playerId: selected, 
+                                personteamseasonid: selected, 
                                 shotMade: parseInt(wasMade),
                                 contested: parseInt(contested),
                                 shotType: parseInt(shotType),
