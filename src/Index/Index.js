@@ -19,17 +19,17 @@ export default function Index(props) {
         .then(res => {
           res.json().then(data => {
             setTeams(data);
-            console.log(teams);
           })
         }).catch(err => {
           console.log(err);
         });
     }, []);
 
-    const [team1, setTeam1] = React.useState(null)
+    const [team1, setTeam1] = React.useState("")
     const [team1Players, setTeam1Players] = React.useState([])
     const updateTeam1 = (newTeam) => {
         setTeam1(newTeam)
+        if (newTeam !== "") {
         Helpers.getFetch('/team/roster?teamid=' + newTeam + '&seasonyear=2021')
         .then(res => {
           res.json().then(data => {
@@ -38,13 +38,16 @@ export default function Index(props) {
           })
         }).catch(err => {
           console.log(err);
-        })
+        }) } else {
+            setTeam1Players([])
+        }
       }
 
-    const [team2, setTeam2] = React.useState(null);
+    const [team2, setTeam2] = React.useState("");
     const [team2Players, setTeam2Players] = React.useState([])
     const updateTeam2 = (newTeam) => {
         setTeam2(newTeam)
+        if (newTeam !== "") {
         Helpers.getFetch('/team/roster?teamid=' + newTeam + '&seasonyear=2021')
         .then(res => {
         res.json().then(data => {
@@ -53,7 +56,9 @@ export default function Index(props) {
         })
         }).catch(err => {
             console.log(err);
-        })
+        }) } else {
+            setTeam2Players([])
+        }
     }
 
 
@@ -69,33 +74,14 @@ export default function Index(props) {
       setSessionName(event.target.value)
     }
 
-    const newSession =<div>
-            <TextField
-                id="session-name"
-                label="Session Name"
-                variant="standard"
-                required
-                color="error"
-                onChange={handleNameChange}
-            />
-            <div className="session-type">
-            <div className="team-selection">
-                <TeamSelection name="Home/Neutral" teams={teams} changeTeam={updateTeam1}></TeamSelection>
-                <TeamSelection name="Away/Neutral" teams={teams} changeTeam={updateTeam2}></TeamSelection>
-            </div>
-            <RadioGroup 
-                aria-label="Session Type"
-                defaultValue="game"
-                name="session-select-group"
-            >
-                <FormControlLabel value="game"  control={<Radio color="error"/>} label="Game" />
-                <FormControlLabel value="scrimmage" control={<Radio color="error"/>} label="Scrimmage" />
-                <FormControlLabel value="practice" control={<Radio color="error"/>} label="Practice/Shoot Around" />
-            </RadioGroup>
-            </div>
-        </div>
+    const [secondRequired, setSecondRequired] = React.useState(true)
+    const [sessionType, setSessionType] = React.useState("game")
+    const handleSessionTypeChange = (event) => {
+        setSessionType(event.target.value)
+        event.target.value === "game" ? setSecondRequired(true) : setSecondRequired(false);
+    }
 
-    const submitButton = (
+    const newSessionSubmitButton = (team1 !== "" && (secondRequired ? team2 !== "": false) && sessionName !== "") ? (
         <Link to={{
             pathname: "/shotchart",
             state: {
@@ -115,8 +101,49 @@ export default function Index(props) {
             }
         }
         >Submit</Button>
-        </Link>)
+        </Link>) : (                    
+        <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+                // run  the form validation logic here & display an error message if anything is missing
+                // console.log([selected, checked, props.x_coord, props.y_coord]);
+                setAlert({show: true})
+                console.log(checked, sessionName);
+            }
+        }
+        >Submit</Button>)
+        
+    
 
+    const newSession = <div>
+            <TextField
+                id="session-name"
+                label="Session Name"
+                variant="standard"
+                required
+                color="error"
+                onChange={handleNameChange}
+            />
+            <div className="team-selection">
+                <TeamSelection name="Home/Neutral" teams={teams} required={true} changeTeam={updateTeam1}></TeamSelection>
+                <TeamSelection name="Away/Neutral" teams={teams} required={secondRequired}changeTeam={updateTeam2}></TeamSelection>
+            </div>
+            <div className="session-type">
+            <RadioGroup 
+                aria-label="Session Type"
+                defaultValue="game"
+                name="session-select-group"
+                onChange={handleSessionTypeChange}
+            >
+                <FormControlLabel value="game"  control={<Radio color="error"/>} label="Game" />
+                <FormControlLabel value="scrimmage" control={<Radio color="error"/>} label="Scrimmage" />
+                <FormControlLabel value="practice" control={<Radio color="error"/>} label="Practice/Shoot Around" />
+            </RadioGroup>
+            </div>
+            {newSessionSubmitButton}
+        </div>
+    console.log(team1, team2)
     return teams.length ? (
         <div className="session-manager">
             <h1>Davidson Basketball Shot Charts</h1>
@@ -129,9 +156,9 @@ export default function Index(props) {
                     } color="error"/>} label="New Session" />
             </FormGroup>
             {checked ? newSession : null}
-            {sessionName != "" ? submitButton : null}
             {alert.show ? <Popup header={"Error"} closePopup={() => setAlert({show: false})} 
-                content={<p>Form validation thing.</p>} showClose={true}/> : null}
+                content={sessionName === "" ? <p>Please provide a session name.</p> : team1 === "" ? <p>Please provide a team in the first box</p> : <p>Please provide a team in the second box</p>}
+                showClose={true}/> : null}
         </div>
     ) : <p>Loading...</p>
 }
