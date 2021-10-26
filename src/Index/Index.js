@@ -81,7 +81,7 @@ export default function Index(props) {
         event.target.value === "game" ? setSecondRequired(true) : setSecondRequired(false);
     }
 
-    const newSessionSubmitButton = (team1 !== "" && (secondRequired ? team2 !== "": false) && sessionName !== "") ? (
+    const newSessionSubmitButton = (team1 !== "" && (secondRequired ? team2 !== "": true) && sessionName !== "") ? (
         <Link to={{
             pathname: "/shotchart",
             state: {
@@ -101,7 +101,7 @@ export default function Index(props) {
             }
         }
         >Submit</Button>
-        </Link>) : (                    
+        </Link>) : (
         <Button
             variant="contained"
             color="error"
@@ -113,8 +113,8 @@ export default function Index(props) {
             }
         }
         >Submit</Button>)
-        
-    
+
+
 
     const newSession = <div>
             <TextField
@@ -127,10 +127,10 @@ export default function Index(props) {
             />
             <div className="team-selection">
                 <TeamSelection name="Home/Neutral" teams={teams} required={true} changeTeam={updateTeam1}></TeamSelection>
-                <TeamSelection name="Away/Neutral" teams={teams} required={secondRequired}changeTeam={updateTeam2}></TeamSelection>
+                <TeamSelection name="Away/Neutral" teams={teams} required={secondRequired} changeTeam={updateTeam2}></TeamSelection>
             </div>
             <div className="session-type">
-            <RadioGroup 
+            <RadioGroup
                 aria-label="Session Type"
                 defaultValue="game"
                 name="session-select-group"
@@ -156,7 +156,7 @@ export default function Index(props) {
                     } color="error"/>} label="New Session" />
             </FormGroup>
             {checked ? newSession : null}
-            {alert.show ? <Popup header={"Error"} closePopup={() => setAlert({show: false})} 
+            {alert.show ? <Popup header={"Error"} closePopup={() => setAlert({show: false})}
                 content={sessionName === "" ? <p>Please provide a session name.</p> : team1 === "" ? <p>Please provide a team in the first box</p> : <p>Please provide a team in the second box</p>}
                 showClose={true}/> : null}
         </div>
