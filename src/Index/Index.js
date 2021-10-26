@@ -15,6 +15,14 @@ import { useEffect } from "react";
 export default function Index(props) {
     const [teams, setTeams] = React.useState("")
     useEffect(() => {
+        Helpers.getFetch('/davidson/sessions')
+        .then(res => {
+          res.json().then(data => {
+            console.log(data);
+          })
+        }).catch(err => {
+          console.log(err);
+        });
         Helpers.getFetch('/team/seasons?leagueid=COLL&seasonyear=2021')
         .then(res => {
           res.json().then(data => {
@@ -82,26 +90,28 @@ export default function Index(props) {
     }
 
     const newSessionSubmitButton = (team1 !== "" && (secondRequired ? team2 !== "": true) && sessionName !== "") ? (
-        <Link to={{
-            pathname: "/shotchart",
-            state: {
-                sessionID: sessionName,
-                players: team1Players.concat(team2Players),
-                team1: team1,
-                team2: team2
-            }
-        }}>
+
         <Button
             variant="contained"
             color="error"
             onClick={() => {
                 // run  the form validation logic here & display an error message if anything is missing
                 // console.log([selected, checked, props.x_coord, props.y_coord]);
+                Helpers.postFetch("/davidson/sessions", JSON.stringify([{name: sessionName, dateadded: new Date(), creator: 'Michael'}]))
+                .then(res => {
+                  if (res.status !== 201) {
+                    console.log('error with post fetch');
+                  } else {
+                    window.location = '/shotchart?sessionid=1';
+                  }
+                }).catch(err => {
+                  console.log(err);
+                });
                 console.log(checked, sessionName);
             }
         }
         >Submit</Button>
-        </Link>) : (
+        ) : (
         <Button
             variant="contained"
             color="error"
