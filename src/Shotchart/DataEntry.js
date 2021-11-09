@@ -10,15 +10,11 @@ import { InputLabel } from "@material-ui/core";
 import Popup from "./Popup";
 import { useState } from "react";
 
-const sample_roster = [
-    {playerName: "Stephen Curry", playerId: "stcurry01", number: "30", team:"Warriors"},
-    {playerName: "Lebron James", playerId: "lejames01", number: "23", team:"Lakers"},
-    {playerName: "LaMelo Ball", playerId: "laball01", number: "2", team:"Hornets"}
-  ]  
+
 
 export default function DataEntry(props) {
-    let options = sample_roster.map(player => {
-      return({label: ("#" + player['number'] + " " + player['playerName'] + " (" + player['team'] + ")"), value: player['playerId']});
+    let options = props.players.map(player => {
+      return({label: (player['personname'] + " #" + player['rosterjerseynumber'] + " (" + player['college'] + ")"), value: player['personteamseasonid']});
     });
 
     let values = {}
@@ -48,21 +44,21 @@ export default function DataEntry(props) {
     return (
         <div>
             <div className="data-entry">
-            <FormControl required fullWidth>
-                <InputLabel id="shooter-selection">Shooter</InputLabel>
-                <Select 
-                    id="shooter-selection"
-                    label="Select"
-                    value={selected}
-                    onChange={handleSelectChange}
-                >
-                {options.map((option) => (
-                    <MenuItem key={option.label} value={option.value}>
-                    {option.label}
-                    </MenuItem>
-                ))}
-                </Select>
-            </FormControl>
+                <FormControl required fullWidth>
+                    <InputLabel id="shooter-selection">Shooter</InputLabel>
+                    <Select 
+                        id="shooter-selection"
+                        label="Select"
+                        value={selected}
+                        onChange={handleSelectChange}
+                    >
+                    {options.map((option) => (
+                        <MenuItem key={option.label} value={option.value}>
+                        {option.label}
+                        </MenuItem>
+                    ))}
+                    </Select>
+                </FormControl>
             <div className="top-question">
                 <div className="shot-made">
                     <h4>Shot Made?</h4>
@@ -74,8 +70,8 @@ export default function DataEntry(props) {
                         name="made-missed"
                         onChange={handleWasMadeChange}
                     >
-                        <FormControlLabel value="1" control={<Radio />} label="Made" />
-                        <FormControlLabel value="0" control={<Radio />} label="Missed" />
+                        <FormControlLabel value="1" control={<Radio color="error" />} label="Made" />
+                        <FormControlLabel value="0" control={<Radio color="error" />} label="Missed" />
                     </RadioGroup>
                 </div>
             </div>
@@ -90,8 +86,8 @@ export default function DataEntry(props) {
                         name="contested"
                         onChange={handleContestedChange}
                     >
-                        <FormControlLabel value="1" control={<Radio />} label="Contested" />
-                        <FormControlLabel value="0" control={<Radio />} label="Uncontested" />
+                        <FormControlLabel value="1" control={<Radio color="error" />} label="Contested" />
+                        <FormControlLabel value="0" control={<Radio color="error" />} label="Uncontested" />
                     </RadioGroup>
                 </div>
             </div>
@@ -108,11 +104,11 @@ export default function DataEntry(props) {
                         name=""
                         onChange={handleSelectShotType}
                     >
-                        <FormControlLabel value="1" control={<Radio />} label="Layup/Dunk" />
-                        <FormControlLabel value="2" control={<Radio />} label="Dribble Jumper" />
-                        <FormControlLabel value="3" control={<Radio />} label="Catch and Shoot" />
-                        <FormControlLabel value="4" control={<Radio />} label="Runner/Floater" />
-                        <FormControlLabel value="5" control={<Radio />} label="Post Move" />
+                        <FormControlLabel value="1" control={<Radio color="error" />} label="Layup/Dunk" />
+                        <FormControlLabel value="2" control={<Radio color="error" />} label="Dribble Jumper" />
+                        <FormControlLabel value="3" control={<Radio color="error" />} label="Catch and Shoot" />
+                        <FormControlLabel value="4" control={<Radio color="error" />} label="Runner/Floater" />
+                        <FormControlLabel value="5" control={<Radio color="error" />} label="Post Move" />
                     </RadioGroup>
                 </div>
             </div>
@@ -120,32 +116,31 @@ export default function DataEntry(props) {
             <div className="submit-button">
                 <Button
                     variant="contained"
-                    color="secondary"
+                    color="error"
                     onClick={() => {
                         // run  the form validation logic here & display an error message if anything is missing
-
-                        console.log(selected)
                         // console.log([selected, checked, props.x_coord, props.y_coord]);
                         if (selected != "") {
                             values = {
-                                playerId: selected, 
+                                personteamseasonid: selected, 
                                 shotMade: parseInt(wasMade),
                                 contested: parseInt(contested),
                                 shotType: parseInt(shotType),
                                 x_coord: props.x_coord,
                                 y_coord: props.y_coord}
+                            console.log(values)
                             props.submitData(values);
                             props.showCircle();
                             props.closePopup();
                         } else {
-                            // call here
+                            setAlert({show: true});
                         }
                     }
                     }
                 >Submit</Button>
             </div>
             {alert.show ? <Popup header={"Error"} closePopup={() => setAlert({show: false})} 
-                content={<p>Check your input.</p>} showClose={true}/> : null}
+                content={<p>No shooter selected.</p>} showClose={true}/> : null}
         </div>
         )
   }

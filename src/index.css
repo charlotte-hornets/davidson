@@ -76,7 +76,8 @@ code {
 }
 
 .data-entry {
-  max-height: 45vw;
+  padding-top: 2vw;
+  max-height: 60vw;
   overflow-y: auto;
 }
 
@@ -154,11 +155,20 @@ svg {
 }
 
 .team-select {
-  width: 20%;
+  width: 15%;
   display: inline-block;
-  padding: 0px 15px 15px 15px;
+  padding-top: 0.5vw;
+  padding-left: 1vw;
 }
 
 .settings {
-  padding: 15px;
+  padding-left: 1vw;
+}
+
+.session-manager {
+  padding-left: 1vw;
+}
+
+.session-type {
+  padding-top: 1vw;
 }
