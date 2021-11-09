@@ -77,11 +77,11 @@ code {
 
 .data-entry {
   padding-top: 2vw;
-  max-height: 60vw;
+  max-height: 45vw;
   overflow-y: auto;
 }
 
-.submit-button {
+.data-submit-button {
   padding-top: 2vw;
 }
 
@@ -154,11 +154,12 @@ svg {
   font-size: 0.05vw;
 }
 
-.team-select {
+.select {
   width: 15%;
   display: inline-block;
   padding-top: 0.5vw;
-  padding-left: 1vw;
+  padding-right: 1vw;
+  padding-bottom: 0.5vw;
 }
 
 .settings {
@@ -170,5 +171,9 @@ svg {
 }
 
 .session-type {
+  padding-top: 1vw;
+}
+
+.session-submit-button {
   padding-top: 1vw;
 }

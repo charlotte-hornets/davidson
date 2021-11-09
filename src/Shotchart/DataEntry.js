@@ -13,9 +13,11 @@ import { useState } from "react";
 
 
 export default function DataEntry(props) {
+    console.log(props);
     let options = props.players.map(player => {
-      return({label: (player['personname'] + " #" + player['rosterjerseynumber'] + " (" + player['college'] + ")"), value: player['personteamseasonid']});
+      return({label: (player['personname'] + " #" + player['rosterjerseynumber'] + " (" + player['college'] + ")"), value: player['personid']});
     });
+    
 
     let values = {}
 
@@ -113,16 +115,16 @@ export default function DataEntry(props) {
                 </div>
             </div>
             </div>
-            <div className="submit-button">
+            <div className="data-submit-button">
                 <Button
                     variant="contained"
                     color="error"
                     onClick={() => {
                         // run  the form validation logic here & display an error message if anything is missing
                         // console.log([selected, checked, props.x_coord, props.y_coord]);
-                        if (selected != "") {
+                        if (selected !== "") {
                             values = {
-                                personteamseasonid: selected, 
+                                playerid: selected, 
                                 shotMade: parseInt(wasMade),
                                 contested: parseInt(contested),
                                 shotType: parseInt(shotType),
