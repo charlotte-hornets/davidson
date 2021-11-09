@@ -38,9 +38,14 @@ export default function DataEntry(props) {
       setContested(event.target.value)
     }
 
-    const [shotType, setShotType] = React.useState("1");
+    const [shotType, setShotType] = React.useState("Layup/Dunk");
     const handleSelectShotType = (event) =>{
       setShotType(event.target.value)
+    }
+
+    const [round, setRound] = React.useState(props.round);
+    const handleRoundChange = (event) => {
+        setRound(event.target.value)
     }
 
     return (
@@ -48,12 +53,7 @@ export default function DataEntry(props) {
             <div className="data-entry">
                 <FormControl required fullWidth>
                     <InputLabel id="shooter-selection">Shooter</InputLabel>
-                    <Select 
-                        id="shooter-selection"
-                        label="Select"
-                        value={selected}
-                        onChange={handleSelectChange}
-                    >
+                    <Select id="shooter-selection" label="Select" value={selected} onChange={handleSelectChange}>
                     {options.map((option) => (
                         <MenuItem key={option.label} value={option.value}>
                         {option.label}
@@ -61,17 +61,24 @@ export default function DataEntry(props) {
                     ))}
                     </Select>
                 </FormControl>
+                <FormControl required fullWidth>
+                    <InputLabel id="round-selection">Round</InputLabel>
+                    <Select id="round-selection" label="Select" value={round} onChange={handleRoundChange}>
+                        <MenuItem key={"round-1"} value={1}>{1}</MenuItem>
+                        <MenuItem key={"round-2"} value={2}>{2}</MenuItem>
+                        <MenuItem key={"round-3"} value={3}>{3}</MenuItem>
+                        <MenuItem key={"round-4"} value={4}>{4}</MenuItem>
+                        <MenuItem key={"round-5"} value={5}>{5}</MenuItem>
+                    </Select>
+                </FormControl>
+                
+
             <div className="top-question">
                 <div className="shot-made">
                     <h4>Shot Made?</h4>
                 </div>
                 <div className="shot-made">
-                    <RadioGroup 
-                        aria-label="made?"
-                        defaultValue="1"
-                        name="made-missed"
-                        onChange={handleWasMadeChange}
-                    >
+                    <RadioGroup aria-label="made?" defaultValue="1" name="made-missed" onChange={handleWasMadeChange}>
                         <FormControlLabel value="1" control={<Radio color="error" />} label="Made" />
                         <FormControlLabel value="0" control={<Radio color="error" />} label="Missed" />
                     </RadioGroup>
@@ -82,14 +89,9 @@ export default function DataEntry(props) {
                     <h4>Shot Contest?</h4>
                 </div>
                 <div className="contest">
-                    <RadioGroup 
-                        aria-label="contested?"
-                        defaultValue="1"
-                        name="contested"
-                        onChange={handleContestedChange}
-                    >
-                        <FormControlLabel value="1" control={<Radio color="error" />} label="Contested" />
-                        <FormControlLabel value="0" control={<Radio color="error" />} label="Uncontested" />
+                    <RadioGroup aria-label="contested?" defaultValue="Contested" name="contested" onChange={handleContestedChange}>
+                        <FormControlLabel value="Contested" control={<Radio color="error" />} label="Contested" />
+                        <FormControlLabel value="Uncontested" control={<Radio color="error" />} label="Uncontested" />
                     </RadioGroup>
                 </div>
             </div>
@@ -99,45 +101,38 @@ export default function DataEntry(props) {
                     <h4>Shot Type:</h4>
                 </div>
                 <div className="shot-type">
-                    <RadioGroup 
-                        row
-                        aria-label="contested?"
-                        defaultValue="1"
-                        name=""
-                        onChange={handleSelectShotType}
-                    >
-                        <FormControlLabel value="1" control={<Radio color="error" />} label="Layup/Dunk" />
-                        <FormControlLabel value="2" control={<Radio color="error" />} label="Dribble Jumper" />
-                        <FormControlLabel value="3" control={<Radio color="error" />} label="Catch and Shoot" />
-                        <FormControlLabel value="4" control={<Radio color="error" />} label="Runner/Floater" />
-                        <FormControlLabel value="5" control={<Radio color="error" />} label="Post Move" />
+                    <RadioGroup row aria-label="contested?" defaultValue="Layup/Dunk" name="" onChange={handleSelectShotType}>
+                        <FormControlLabel value="Layup/Dunk" control={<Radio color="error" />} label="Layup/Dunk" />
+                        <FormControlLabel value="Dribble Jumper" control={<Radio color="error" />} label="Dribble Jumper" />
+                        <FormControlLabel value="Catch and Shoot" control={<Radio color="error" />} label="Catch and Shoot" />
+                        <FormControlLabel value="Runner/Floater" control={<Radio color="error" />} label="Runner/Floater" />
+                        <FormControlLabel value="Post Move" control={<Radio color="error" />} label="Post Move" />
                     </RadioGroup>
                 </div>
             </div>
             </div>
             <div className="data-submit-button">
-                <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => {
+                <Button variant="contained" color="error" onClick={() => {
                         // run  the form validation logic here & display an error message if anything is missing
                         // console.log([selected, checked, props.x_coord, props.y_coord]);
-                        if (selected !== "") {
-                            values = {
-                                playerid: selected, 
-                                shotMade: parseInt(wasMade),
-                                contested: parseInt(contested),
-                                shotType: parseInt(shotType),
-                                x_coord: props.x_coord,
-                                y_coord: props.y_coord}
-                            console.log(values)
-                            props.submitData(values);
-                            props.showCircle();
-                            props.closePopup();
-                        } else {
-                            setAlert({show: true});
+                            if (selected !== "") {
+                                values = {
+                                    playerid: selected, 
+                                    shotMade: parseInt(wasMade),
+                                    contested: contested,
+                                    shotType: shotType,
+                                    x_coord: props.x_coord,
+                                    y_coord: props.y_coord,
+                                    round: round
+                                }
+                                console.log(values);
+                                props.submitData(values);
+                                props.showCircle();
+                                props.closePopup();
+                            } else {
+                                setAlert({show: true});
+                            }
                         }
-                    }
                     }
                 >Submit</Button>
             </div>

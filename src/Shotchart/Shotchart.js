@@ -5,6 +5,7 @@ import Popup from "./Popup.js";
 import DataEntry from "./DataEntry.js";
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Undo from "./Undo.js";
 
 
 export default class Shotchart extends Component {
@@ -27,11 +28,12 @@ export default class Shotchart extends Component {
         circle_show: false,
         // form info
         popupShow: false,
-        // x and y selected values
+        // values to pass into DataEntry
         current_x: "N/A",
         current_y: "N/A",
+        current_round: 1,
         // data on latest shot
-        latest_shot: {"x_coord": null, "y_coord": null},
+        latest_shot: {"x": null, "y": null},
         shotList: [],
         threePointLineXY: [],
         chartSettings: {
@@ -277,7 +279,7 @@ export default class Shotchart extends Component {
     const urlParams = new URLSearchParams(queryString);
 
     if(urlParams.get('team2') !== "" && urlParams.get('team2') !== "null") {
-      this.setState({teamsNeeded: this.state.teamsNeeded+1})
+      this.setState({statesNeeded: this.state.statesNeeded+1})
     }
 
     if (urlParams.has('team1') && urlParams.has('sessionid')) {
@@ -295,11 +297,22 @@ export default class Shotchart extends Component {
       }
       
       if (urlParams.get('sessionid') !== "null"){
-        Helpers.getFetch('/davidson/shots')
+        Helpers.getFetch('/davidson/shots?sessionid='+urlParams.get('sessionid'))
         .then(res => {
         res.json().then(data => {
-          this.setState({statesLoaded: this.state.statesLoaded + 1})
-          console.log(data)
+          if (data.length !== 0){
+            this.setState({
+              statesLoaded: this.state.statesLoaded + 1, 
+              shotList: data, 
+              latest_shot: data.at(-1),
+              circle_show: true
+            })
+          } else {
+            this.setState({
+              statesLoaded: this.state.statesLoaded + 1,
+              circle_show: false
+            })
+          }
         })
         }).catch(err => {
             console.log(err);
@@ -308,11 +321,9 @@ export default class Shotchart extends Component {
       }
 
       if (urlParams.get('team2') !== "" && urlParams.get('team2') !== "null") {
-        console.log("fetching team 2")
         Helpers.getFetch('/team/roster?teamid=' + urlParams.get('team2') + '&seasonyear=2021')
           .then(res => {
           res.json().then(data => {
-              console.log("concatting")
               this.setState({players: this.state.players.concat(data)})
               this.setState({statesLoaded: this.state.statesLoaded + 1})
           })
@@ -349,38 +360,93 @@ export default class Shotchart extends Component {
     })
   }
 
-  updateShotList = (newData) => {
-    const sessionid = parseInt(this.state.sessionid);
-    const x_coord = newData.x_coord;
-    const y_coord = newData.y_coord;
-    const playerid = newData.playerid
-    console.log(sessionid, x_coord, y_coord, playerid);
+  submitShotList = (newData) => {
+    this.setState({current_round: newData.round});
     Helpers.postFetch("/davidson/shots", JSON.stringify([{
-      sessionid: sessionid,
-      playerid: playerid,
-      x: x_coord,
-      y: y_coord,
-      dateadded: new Date()
+      sessionid: parseInt(this.state.sessionid),
+      playerid: newData.playerid,
+      x: newData.x_coord,
+      y: newData.y_coord,
+      dateadded: new Date(),
+      make: newData.shotMade,
+      round: newData.round,
+      contesttype: newData.contested,
+      shottype: newData.shotType
     }]))
     .then(res => {
       if (res.status !== 201) {
         console.log('error with post fetch');
-        console.log(res)
       } else {
-        console.log("posted");
+        Helpers.getFetch('/davidson/shots?sessionid='+this.state.sessionid)
+        .then(res => {
+        res.json().then(data => {
+          console.log(data)
+          if (data.length !== 0){
+            this.setState({
+              shotList: data, 
+              latest_shot: data.at(-1),
+              
+            })
+            this.setState({circle_show: true});
+          } else {
+            this.setState({
+              circle_show: false
+            })
+          }
+        })
+        }).catch(err => {
+            console.log(err);
+            window.location = '/';
+        })
       }
     }).catch(err => {
       console.log(err);
     });
-
-
-    this.setState(prevList => {
-      return {
-        latest_shot: newData, 
-        shotList: [...prevList.shotList, newData]
-      }
-    })
   }
+
+  undoShotList = () => {
+
+    if (this.state.shotList.length !== 0) {
+      Helpers.deleteFetch("/davidson/shots", JSON.stringify([this.state.latest_shot]))
+      .then(res => {
+        console.log(res)
+        if (res.status !== 202) {
+          console.log('error with delete fetch');
+        } else {
+          console.log("deleted");
+          Helpers.getFetch('/davidson/shots?sessionid='+this.state.sessionid)
+            .then(res => {
+            res.json().then(data => {
+              if (data.length !== 0){
+                this.setState({
+                  shotList: data, 
+                  latest_shot: data.at(-1),
+                  
+                })
+                this.setState({circle_show: true});
+              } else {
+                this.setState({
+                  circle_show: false
+                })
+              }
+            })
+            }).catch(err => {
+                console.log(err);
+                window.location = '/';
+            })
+        }
+      }).catch(err => {
+        console.log(err);
+      });
+      
+
+    } else {
+      console.log("nothing to undo")
+    }
+  }
+
+
+
 
   updateMultipleShot = () => {
     this.setState((pastState) => {
@@ -411,7 +477,8 @@ export default class Shotchart extends Component {
   }
 
   render() {
-    let circles = this.state.multipleShotView ? this.state.shotList.map((shot, index) => <circle key={index+1} fill={shot['shotMade'] === 1 ? "green" : "red"} r="2%" cx={shot['x_coord']} cy={shot['y_coord']}/>) : this.state.circle_show ? <circle fill={this.state.latest_shot['shotMade'] === 1 ? "green" : "red"} r="2%" cx={this.state.latest_shot['x_coord']} cy={this.state.latest_shot['y_coord']}/> : null;
+    console.log()
+    let circles = this.state.multipleShotView ? this.state.shotList.map((shot, index) => <circle key={index+1} fill={shot['make'] === 1 ? "green" : "red"} r="2%" cx={shot.x} cy={shot.y}/>) : this.state.circle_show ? <circle fill={this.state.latest_shot['make'] === 1 ? "green" : "red"} r="2%" cx={this.state.latest_shot['x']} cy={this.state.latest_shot['y']}/> : null;
     if (this.state.statesNeeded=== this.state.statesLoaded) {
       return (
         <div>
@@ -420,11 +487,14 @@ export default class Shotchart extends Component {
             <div>
                 <FormControlLabel className="display-switch" control={<Switch color="error" onClick={this.updateMultipleShot} value={this.state.multipleShotView}/>} label="Multiple Shot View"/>
             </div>
+            <div>
+              <Undo undoFunction={this.undoShotList}/>
+            </div>
           </div>
     
           <div style={{width: '50%', display: "flex", margin: 'auto'}}>
             <svg id="court-diagram" ref={node => this.node = node} onClick={this.clicked}>{this.state.circle_show ? circles: null}</svg>
-            {this.state['popupShow'] ? <Popup header={"Data Entry"} closePopup={this.closeEntry} content={<DataEntry players={this.state.players} x_coord={this.state['current_x']} y_coord={this.state['current_y']} submitData={this.updateShotList} showCircle={this.updateCircleShow} closePopup={this.closeEntry} showClose={true}/>} showClose={true}/> : null}
+            {this.state['popupShow'] ? <Popup header={"Data Entry"} closePopup={this.closeEntry} content={<DataEntry players={this.state.players} round={this.state.current_round} x_coord={this.state['current_x']} y_coord={this.state['current_y']} submitData={this.submitShotList} showCircle={this.updateCircleShow} closePopup={this.closeEntry} showClose={true}/>} showClose={true}/> : null}
           </div>
     
         </div>
