@@ -141,7 +141,7 @@ code {
 }
 
 svg {
-  display: block;
+  display: inline;
   margin: auto;
 }
 
@@ -166,7 +166,7 @@ svg {
   padding-left: 1vw;
 }
 
-.session-manager {
+.side .session-manager {
   padding-left: 1vw;
 }
 
@@ -176,4 +176,37 @@ svg {
 
 .session-submit-button {
   padding-top: 1vw;
+}
+
+.loading-screen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
+
+.loading-circle {
+  position: absolute;
+  top: -25%;
+  left: 50%;
+  margin: -35px 0 0 -35px;
+}
+
+.loading-tip {
+  text-align: center;
+}
+
+.column {
+  display: inline-flex;
+  vertical-align: middle;
+  padding: 0px 10px;
+}
+
+.row {
+  padding-top: 3vw;
+}
+
+.sidebar-header {
+  padding: 0px;
 }

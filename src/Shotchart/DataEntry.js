@@ -33,7 +33,7 @@ export default function DataEntry(props) {
       setWasMade(event.target.value);
     };
 
-    const [contested, setContested] = React.useState("1");
+    const [contested, setContested] = React.useState("Contested");
     const handleContestedChange = (event) =>{
       setContested(event.target.value)
     }
@@ -125,7 +125,6 @@ export default function DataEntry(props) {
                                     y_coord: props.y_coord,
                                     round: round
                                 }
-                                console.log(values);
                                 props.submitData(values);
                                 props.showCircle();
                                 props.closePopup();

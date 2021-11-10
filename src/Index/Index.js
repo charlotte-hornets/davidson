@@ -11,6 +11,11 @@ import TeamSelection from "./TeamSelect";
 import Helpers from '../Utils/Helpers.js';
 import { MenuItem } from "@material-ui/core";
 import { useEffect } from "react";
+import LoadingPage from "../PageTemplates/LoadingPage";
+import Navbar from "../ComponentTemplates/Navbar";
+
+let statesLoaded = 0;
+let statesNeeded = 2;
 
 export default function Index(props) {
     const [teams, setTeams] = React.useState("")
@@ -20,21 +25,24 @@ export default function Index(props) {
       Helpers.getFetch('/davidson/sessions')
       .then(res => {
         res.json().then(data => {
-          console.log(data);
+          statesLoaded++;
           setSessions(data.reverse());
         })
       }).catch(err => {
         console.log(err);
       });
+
       Helpers.getFetch('/team/seasons?leagueid=COLL&seasonyear=2021')
-      .then(res => {
-        res.json().then(data => {
-          setTeams(data);
-        })
-      }).catch(err => {
-        console.log(err);
-      });
-  }, []);
+        .then(res => {
+          res.json().then(data => {
+            statesLoaded++;
+            setTeams(data);
+          })
+        }).catch(err => {
+          console.log(err);
+        });
+    }, []);
+
 
     const [secondRequired, setSecondRequired] = React.useState(true)
     const [sessionType, setSessionType] = React.useState("game")
@@ -74,8 +82,6 @@ export default function Index(props) {
 
     const newSessionSubmitButton = (
         <Button variant="contained" color="error" onClick={() => {
-            console.log(team1, team2);
-            console.log(sessionType);
             Helpers.postFetch("/davidson/sessions", JSON.stringify([{
               name: sessionName, 
               dateadded: new Date(), 
@@ -155,8 +161,10 @@ export default function Index(props) {
         </div>
       </div>
     )
-    console.log(team1, team2)
-    return teams.length && sessions.length ? (
+
+    console.log(statesLoaded, statesNeeded)
+    return statesLoaded === statesNeeded ? (<div>
+        <Navbar/>
         <div className="session-manager">
             <h1>Davidson Basketball Shot Charts</h1>
             <p>To start or continue a session, please fill in the required information below:</p>
@@ -172,7 +180,7 @@ export default function Index(props) {
                 content={sessionName === "" ? <p>Please provide a session name.</p> : team1 === "" ? <p>Please provide a team in the first box</p> : <p>Please provide a team in the second box</p>}
                 showClose={true}/> : null}
         </div>
-    ) : <p>Loading...</p>
+        </div>) : <LoadingPage needed={statesNeeded} loaded={statesLoaded}/>
 }
 
 

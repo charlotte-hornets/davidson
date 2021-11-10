@@ -6,6 +6,11 @@ import DataEntry from "./DataEntry.js";
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Undo from "./Undo.js";
+import LoadingPage from "../PageTemplates/LoadingPage.js";
+import Sidebar from "../ComponentTemplates/Sidebar";
+import LatestShot from "./LatestShot.js";
+import Navbar from "../ComponentTemplates/Navbar"
+
 
 
 export default class Shotchart extends Component {
@@ -381,7 +386,6 @@ export default class Shotchart extends Component {
         Helpers.getFetch('/davidson/shots?sessionid='+this.state.sessionid)
         .then(res => {
         res.json().then(data => {
-          console.log(data)
           if (data.length !== 0){
             this.setState({
               shotList: data, 
@@ -405,15 +409,12 @@ export default class Shotchart extends Component {
   }
 
   undoShotList = () => {
-
     if (this.state.shotList.length !== 0) {
       Helpers.deleteFetch("/davidson/shots", JSON.stringify([this.state.latest_shot]))
       .then(res => {
-        console.log(res)
         if (res.status !== 202) {
           console.log('error with delete fetch');
         } else {
-          console.log("deleted");
           Helpers.getFetch('/davidson/shots?sessionid='+this.state.sessionid)
             .then(res => {
             res.json().then(data => {
@@ -445,9 +446,6 @@ export default class Shotchart extends Component {
     }
   }
 
-
-
-
   updateMultipleShot = () => {
     this.setState((pastState) => {
       return {multipleShotView: !pastState.multipleShotView}
@@ -459,7 +457,6 @@ export default class Shotchart extends Component {
       return {circle_show: true}
     })
   }
-
 
   updateSessionInfo = () => {
     const queryString = window.location.search;
@@ -481,25 +478,32 @@ export default class Shotchart extends Component {
     if (this.state.statesNeeded=== this.state.statesLoaded) {
       return (
         <div>
-          <div className="settings">
+          <Navbar/>
+
+          <div className="row">
+            <div className="column" style={{width: '75%', margin: 'auto'}}>
+              <svg id="court-diagram" ref={node => this.node = node} onClick={this.clicked}>{this.state.circle_show ? circles: null}</svg>
+              {this.state['popupShow'] ? <Popup header={"Data Entry"} closePopup={this.closeEntry} content={<DataEntry players={this.state.players} round={this.state.current_round} x_coord={this.state['current_x']} y_coord={this.state['current_y']} submitData={this.submitShotList} showCircle={this.updateCircleShow} closePopup={this.closeEntry} showClose={true}/>} showClose={true}/> : null}
+            </div>
+            <div className="latest-shot column">
+                <Sidebar header={"Latest Shot"} content={<LatestShot data={this.state.latest_shot}/>}/>
+            </div>
+          </div>
+                  <div className="settings">
             <h2>Settings</h2>
-            <div>
+            <div className="column">
                 <FormControlLabel className="display-switch" control={<Switch color="error" onClick={this.updateMultipleShot} value={this.state.multipleShotView}/>} label="Multiple Shot View"/>
             </div>
-            <div>
+            <div className="column">
               <Undo undoFunction={this.undoShotList}/>
             </div>
           </div>
-    
-          <div style={{width: '50%', display: "flex", margin: 'auto'}}>
-            <svg id="court-diagram" ref={node => this.node = node} onClick={this.clicked}>{this.state.circle_show ? circles: null}</svg>
-            {this.state['popupShow'] ? <Popup header={"Data Entry"} closePopup={this.closeEntry} content={<DataEntry players={this.state.players} round={this.state.current_round} x_coord={this.state['current_x']} y_coord={this.state['current_y']} submitData={this.submitShotList} showCircle={this.updateCircleShow} closePopup={this.closeEntry} showClose={true}/>} showClose={true}/> : null}
-          </div>
-    
         </div>
       );
     } else {
-      return <p>Loading...</p>
+      return <div>
+        <LoadingPage loaded={this.state.statesLoaded} needed={this.state.statesNeeded} />
+      </div>
     }
   
   }
