@@ -300,11 +300,12 @@ export default class Shotchart extends Component {
         Helpers.getFetch('/davidson/shots?sessionid='+urlParams.get('sessionid'))
         .then(res => {
         res.json().then(data => {
+          console.log(data)
           if (data.length !== 0){
             this.setState({
               statesLoaded: this.state.statesLoaded + 1, 
               shotList: data, 
-              latest_shot: data.at(-1),
+              latest_shot: data.slice(-1).pop(),
               circle_show: true
             })
           } else {
@@ -384,8 +385,7 @@ export default class Shotchart extends Component {
           if (data.length !== 0){
             this.setState({
               shotList: data, 
-              latest_shot: data.at(-1),
-              
+              latest_shot: data.slice(-1).pop(),
             })
             this.setState({circle_show: true});
           } else {
@@ -420,7 +420,7 @@ export default class Shotchart extends Component {
               if (data.length !== 0){
                 this.setState({
                   shotList: data, 
-                  latest_shot: data.at(-1),
+                  latest_shot: data.slice(-1).pop(),
                   
                 })
                 this.setState({circle_show: true});
@@ -477,7 +477,6 @@ export default class Shotchart extends Component {
   }
 
   render() {
-    console.log()
     let circles = this.state.multipleShotView ? this.state.shotList.map((shot, index) => <circle key={index+1} fill={shot['make'] === 1 ? "green" : "red"} r="2%" cx={shot.x} cy={shot.y}/>) : this.state.circle_show ? <circle fill={this.state.latest_shot['make'] === 1 ? "green" : "red"} r="2%" cx={this.state.latest_shot['x']} cy={this.state.latest_shot['y']}/> : null;
     if (this.state.statesNeeded=== this.state.statesLoaded) {
       return (
