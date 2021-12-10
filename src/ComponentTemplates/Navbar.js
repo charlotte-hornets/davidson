@@ -5,14 +5,16 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import NavButton from './NavButton';
+import { ThemeProvider } from '@mui/material';
+import { theme } from '../theme';
 
 export default function ButtonAppBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar color="error" position="static">
+      <AppBar style={{background: "linear-gradient(to bottom right, #ac1a2f, #494949"}} position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            'Cats Stats Shot Chart System
+          <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
+            'CAT CHARTS
           </Typography>
           <NavButton color="inherit" url="/" text="Input" />
           <NavButton color="inherit" url="/test" text="Analysis"/>

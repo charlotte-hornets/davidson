@@ -1,4 +1,6 @@
 import React from "react";
+import { Typography } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 export default function LatestShot(props) {
     const data = props.data;
@@ -9,24 +11,24 @@ export default function LatestShot(props) {
     const shottype = data.shottype;
 
     return (
-        <div>
-            <div>
-                <h5>Player:</h5>
-                <p>{player}</p>
-            </div>
-            <div>
-                <h5>Shot Type:</h5>
-                <p>{shottype}</p>
-            </div>
-            <div>
-                <h5>Result:</h5>
-                <p>{made}</p>
-            </div>
-            <div>
-                <h5>Contest:</h5>
-                <p>{contest}</p>
-            </div>
-        </div>
+        <Grid container spacing={2}>
+            <Grid item sm={6} xs={12}>
+                <Typography variant="p" style={{fontWeight: 700}}>PLAYER<br/></Typography>
+                <Typography variant="p">{player}</Typography>
+            </Grid>
+            <Grid item sm={6} xs={12}>
+                <Typography variant="p" style={{fontWeight: 700}}>SHOT TYPE<br/></Typography>
+                <Typography variant="p">{shottype}</Typography>
+            </Grid>
+            <Grid item sm={6} xs={12}>
+                <Typography variant="p" style={{fontWeight: 700}}>RESULT<br/></Typography>
+                <Typography variant="p">{made}</Typography>
+            </Grid>
+            <Grid item sm={6} xs={12}>
+                <Typography variant="p" style={{fontWeight: 700}}>CONTEST<br/></Typography>
+                <Typography variant="p">{contest}</Typography>
+            </Grid>
+        </Grid>
     )
     
 }

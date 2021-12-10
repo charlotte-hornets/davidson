@@ -1,4 +1,5 @@
 import React from "react";
+import { Typography } from "@material-ui/core";
 
 export default function Popup(props) {
   return (
@@ -6,7 +7,7 @@ export default function Popup(props) {
         <div className='popup_inner'>
           {props.showClose === false ? null : <span onClick={props.closePopup} className='close-button'>x</span>}
           <div>
-            <h2>{props.header}</h2>
+            <Typography variant="h2">{props.header}</Typography>
           </div>
           {props.content}
         </div>

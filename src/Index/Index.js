@@ -9,15 +9,16 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Popup from "../Shotchart/Popup";
 import TeamSelection from "./TeamSelect";
 import Helpers from '../Utils/Helpers.js';
-import { MenuItem } from "@material-ui/core";
+import { Grid, MenuItem, Typography } from "@material-ui/core";
 import { useEffect } from "react";
 import LoadingPage from "../PageTemplates/LoadingPage";
 import Navbar from "../ComponentTemplates/Navbar";
+import { Box } from "@material-ui/system";
 
 let statesLoaded = 0;
 let statesNeeded = 2;
 
-export default function Index(props) {
+export default function Index() {
     const [teams, setTeams] = React.useState("")
     const [sessions, setSessions] = React.useState([])
     
@@ -32,7 +33,7 @@ export default function Index(props) {
         console.log(err);
       });
 
-      Helpers.getFetch('/team/seasons?leagueid=COLL&seasonyear=2021')
+      Helpers.getFetch('/teams?seasonyear=2021&leagueid=COLL&leaguelevel=NCAA1')
         .then(res => {
           res.json().then(data => {
             statesLoaded++;
@@ -80,8 +81,9 @@ export default function Index(props) {
       setCurrentSession({});
     }
 
-    const newSessionSubmitButton = (
-        <Button variant="contained" color="error" onClick={() => {
+    const SubmitButton = () => {
+      if (checked) {
+        return <Button variant="contained" color="primary" onClick={() => {
             Helpers.postFetch("/davidson/sessions", JSON.stringify([{
               name: sessionName, 
               dateadded: new Date(), 
@@ -106,10 +108,8 @@ export default function Index(props) {
             });
           }}
         >Submit</Button>
-    )
-
-    const resumeSessionSubmit = (
-      <Button variant="contained" color="error" onClick={() => {
+      } else {
+        return <Button variant="contained" color="primary" onClick={() => {
           console.log(currentSession.sessionid);
           if (currentSession.sessionid === undefined) {
             setAlert({show: true});
@@ -122,79 +122,80 @@ export default function Index(props) {
             const secondTeam = "team2=" + currentSession.teamseasonid_2
             window.location = "/shotchart?" + sessionid + "&" + firstTeam + "&" + secondTeam;
           }
-      }}>Submit</Button>)
+        }}>Submit</Button>
+      }
+    }
 
     
     const resumeSession = (
-      <div>
-        <div className="select">
-            <TextField fullWidth required select defaultValue="" label="Select" onChange={handleSessionChange}>
+      <Grid container spacing={2}>
+        <Grid item xs={3}>
+            <TextField fullWidth color="primary" required select defaultValue="" label="Select" onChange={handleSessionChange}>
               {sessions.map((option) => (
                 <MenuItem key={option.sessionid} value={option}>
                   {option.name}
                 </MenuItem>
               ))}
           </TextField>
-        </div>
-        <div className="session-submit-button">
-          {resumeSessionSubmit}
-        </div>
-      </div>
+        </Grid>
+        <Grid item xs={9}/>
+        <Grid item xs={12}>
+          <div className="session-submit-button">
+            {SubmitButton()}
+          </div>
+        </Grid>
+      </Grid>
     )
 
     const newSession = (
-      <div>
-        <TextField id="session-name" label="Session Name" variant="standard" required color="error" onChange={handleNameChange}/>
-        <div className="team-selection">
-            <TeamSelection name="Home/Neutral" teams={teams} required={true} changeTeam={updateTeam1}></TeamSelection>
-            <TeamSelection name="Away/Neutral" teams={teams} required={secondRequired} changeTeam={updateTeam2}></TeamSelection>
-        </div>
-        <div className="session-type">
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <TextField id="session-name" label="Session Name" variant="standard" required color="primary" onChange={handleNameChange}/>
+        </Grid>
+        <Grid item xs={8} sm={3} className="team-selection">
+            <TeamSelection className="team-select" name="Home/Neutral" teams={teams} required={true} changeTeam={updateTeam1}></TeamSelection>
+        </Grid>
+        <Grid item xs={8} sm={3}>
+            <TeamSelection className="team-select" name="Away/Neutral" teams={teams} required={secondRequired} changeTeam={updateTeam2}></TeamSelection>
+        </Grid>
+        <Grid item xs={12} className="session-type">
           <RadioGroup defaultValue="game" aria-label="Session Type" name="session-select-group" onChange={handleSessionTypeChange}>
-              <FormControlLabel value="game"  control={<Radio color="error"/>} label="Game" />
-              <FormControlLabel value="scrimmage" control={<Radio color="error"/>} label="Scrimmage" />
-              <FormControlLabel value="practice" control={<Radio color="error"/>} label="Practice/Shoot Around" />
+              <FormControlLabel value="game"  control={<Radio color="primary"/>} label="Game" />
+              <FormControlLabel value="scrimmage" control={<Radio color="primary"/>} label="Scrimmage" />
+              <FormControlLabel value="practice" control={<Radio color="primary"/>} label="Practice/Shoot Around" />
           </RadioGroup>
-        </div>
-        <div className="session-submit-button">
-          {newSessionSubmitButton}
-        </div>
-      </div>
+        </Grid>
+        <Grid item xs={12} className="session-submit-button">
+          {SubmitButton()}
+        </Grid>
+      </Grid>
     )
 
-    console.log(statesLoaded, statesNeeded)
-    return statesLoaded === statesNeeded ? (<div>
+    return statesLoaded === statesNeeded ? (<Box>
         <Navbar/>
-        <div className="session-manager">
-            <h1>Davidson Basketball Shot Charts</h1>
-            <p>To start or continue a session, please fill in the required information below:</p>
-            <FormGroup className="session-checkbox">
-                <FormControlLabel control={<Checkbox checked={checked} onChange={() => {
-                    handleCheckedChange();
-                    setSessionName("")
-                    }
-                    } color="error"/>} label="New Session" />
-            </FormGroup>
-            {checked ? newSession : resumeSession}
-            {alert.show ? <Popup header={"Error"} closePopup={() => setAlert({show: false})}
-                content={sessionName === "" ? <p>Please provide a session name.</p> : team1 === "" ? <p>Please provide a team in the first box</p> : <p>Please provide a team in the second box</p>}
-                showClose={true}/> : null}
-        </div>
-        </div>) : <LoadingPage needed={statesNeeded} loaded={statesLoaded}/>
+        <Box sx={{p:2}}>
+        <Grid className="session-manager" container spacing={2}>
+          <Grid item xs={12}>
+              <Typography variant="h1">SESSION MANAGER</Typography>
+          </Grid>
+          <Grid item xs={12}>
+              <Typography variant="p">To start or continue a session, please fill in the required information below:</Typography>
+           </Grid>
+           <Grid item xs={12}>
+              <FormGroup>
+                  <FormControlLabel control={<Checkbox checked={checked} onChange={() => {
+                      handleCheckedChange();
+                      setSessionName("")
+                      }
+                      } color="primary"/>} label="New Session" />
+              </FormGroup>
+            </Grid>
+            <Grid item xs={12}>
+              {checked ? newSession : resumeSession}
+            </Grid>
+          </Grid>
+              {alert.show ? <Popup header={"Error"} closePopup={() => setAlert({show: false})}
+                  content={sessionName === "" ? <p>Please provide a session name.</p> : team1 === "" ? <p>Please provide a team in the first box</p> : <p>Please provide a team in the second box</p>}
+                  showClose={true}/> : null}
+        </Box></Box>) : <LoadingPage needed={statesNeeded} loaded={statesLoaded}/>
 }
-
-
-    /*
-    if (newTeam !== "") {
-      Helpers.getFetch('/team/roster?teamid=' + newTeam + '&seasonyear=2021')
-      .then(res => {
-      res.json().then(data => {
-          setTeam2Players(data);
-          setTeam2(parseInt(newTeam));
-      })
-      }).catch(err => {
-          console.log(err);
-      }) } else {
-          setTeam2Players([])
-      }
-      */

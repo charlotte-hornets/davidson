@@ -4,9 +4,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 export default function TeamSelection(props) {
   return props.required ? (
-    <div className="select">
+    <div>
       <h4>{props.name}</h4>
-      <TextField required select defaultValue="" label="Select" fullWidth onChange={(event) => {
+      <TextField color="primary" variant="outlined" required select defaultValue="" label="Select" fullWidth onChange={(event) => {
           props.changeTeam(event.target.value);
       }}>
         <MenuItem key={""} value={""}>
@@ -18,9 +18,9 @@ export default function TeamSelection(props) {
         </MenuItem>))}
       </TextField>
     </div>) : (
-    <div className="select">
+    <div>
       <h4>{props.name}</h4>
-      <TextField select defaultValue="" label="Select" fullWidth onChange={(event) => {
+      <TextField color="primary" variant="outlined" select defaultValue="" label="Select" fullWidth onChange={(event) => {
         props.changeTeam(event.target.value);
       }}>
         <MenuItem key={""} value={""}>

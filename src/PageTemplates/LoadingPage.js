@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Loading from "../ComponentTemplates/Loading";
 import React from "react";
+import { Grid } from "@material-ui/core";
 
 const tips = [
     ['"Everything negative - pressure, challenges - are all an opportunity for me to rise"', "Kobe Bryant"],
@@ -22,10 +23,14 @@ export default function LoadingPage(props) {
     }, []);
 
     console.log(props.loaded, props.needed)
-    return <div >
-        <div className="loading-screen">
-            <Loading loaded={props.loaded} needed={props.needed}></Loading>
-            <p className="loading-tip" >{loadingTip[0]}<br/>{loadingTip[1]}</p>
-        </div>
+    return <div className="loading-screen">
+        <Grid container justifyContent="center" alignItems="center" spacing={2} style={{height: "100%"}}>
+            <Grid item xs={12}>
+                <Loading loaded={props.loaded} needed={props.needed}></Loading>
+            </Grid>
+            <Grid item xs={12}>
+                <p className="loading-tip">{loadingTip[0]}<br/>{loadingTip[1]}</p>
+            </Grid>
+        </Grid>
     </div>
 }

@@ -76,9 +76,10 @@ code {
 }
 
 .data-entry {
-  padding-top: 2vw;
-  max-height: 45vw;
+  padding-top: 2vh;
+  max-height: 65vh;
   overflow-y: auto;
+  padding-bottom: 2vh;
 }
 
 .data-submit-button {
@@ -140,11 +141,6 @@ code {
   stroke-opacity: 1;
 }
 
-svg {
-  display: inline;
-  margin: auto;
-}
-
 #shot-chart-legend rect {
   fill-opacity: 0.7;
 }
@@ -164,9 +160,10 @@ svg {
 
 .settings {
   padding-left: 1vw;
+  padding-bottom: 5px;
 }
 
-.side .session-manager {
+.session-manager {
   padding-left: 1vw;
 }
 
@@ -197,16 +194,15 @@ svg {
   text-align: center;
 }
 
-.column {
-  display: inline-flex;
-  vertical-align: middle;
-  padding: 0px 10px;
+#shotchart-page-content {
+  padding: 0% 2.5%;
 }
 
-.row {
-  padding-top: 3vw;
+circle.shot-circle:hover {
+  stroke: black;
+  stroke-width: 0.5%;
 }
 
-.sidebar-header {
-  padding: 0px;
+.team-select {
+  width: 100%;
 }

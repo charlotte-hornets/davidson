@@ -3,5 +3,5 @@ import React from 'react';
 
 
 export default function Undo(props) {
-    return <Button color="error" variant="contained" onClick={props.undoFunction}>Undo</Button>
+    return <Button fullWidth color="primary" variant="contained" onClick={props.undoFunction}>Undo</Button>
 }
