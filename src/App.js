@@ -10,10 +10,13 @@ import Shotchart from './Shotchart/Shotchart.js';
 import Test from './test/Test.js';
 import { ThemeProvider } from '@mui/material';
 import { theme } from './theme';
+import Analysis from "./Analysis/Analysis.js";
+import Navbar from "./ComponentTemplates/Navbar"
 
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
+      <Navbar/>
     <Router>
       <div>
         {/* A <Switch> looks through its children <Route>s and
@@ -21,7 +24,7 @@ export default function App() {
         <Switch>
           <Route exact path="/" component={Index}/>
           <Route path="/shotchart" component ={Shotchart}/>
-          <Route path="/test" component ={Test}/>
+          <Route path="/analysis" component ={Analysis}/>
         </Switch>
       </div>
     </Router>

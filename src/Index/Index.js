@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import LoadingPage from "../PageTemplates/LoadingPage";
 import Navbar from "../ComponentTemplates/Navbar";
 import { Box } from "@material-ui/system";
+import { FormControl } from "@material-ui/core"
 
 let statesLoaded = 0;
 let statesNeeded = 2;
@@ -38,10 +39,13 @@ export default function Index() {
           res.json().then(data => {
             statesLoaded++;
             setTeams(data);
+            console.log(data);
           })
         }).catch(err => {
           console.log(err);
         });
+
+        
     }, []);
 
 
@@ -130,13 +134,15 @@ export default function Index() {
     const resumeSession = (
       <Grid container spacing={2}>
         <Grid item xs={3}>
-            <TextField fullWidth color="primary" required select defaultValue="" label="Select" onChange={handleSessionChange}>
+          <FormControl fullWidth>
+            <TextField fullWidth required select defaultValue="" label="Select" onChange={handleSessionChange}>
               {sessions.map((option) => (
                 <MenuItem key={option.sessionid} value={option}>
                   {option.name}
                 </MenuItem>
               ))}
           </TextField>
+          </FormControl>
         </Grid>
         <Grid item xs={9}/>
         <Grid item xs={12}>
@@ -150,13 +156,13 @@ export default function Index() {
     const newSession = (
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <TextField id="session-name" label="Session Name" variant="standard" required color="primary" onChange={handleNameChange}/>
+          <TextField id="session-name" label="Session Name" variant="standard" required onChange={handleNameChange}/>
         </Grid>
         <Grid item xs={8} sm={3} className="team-selection">
-            <TeamSelection className="team-select" name="Home/Neutral" teams={teams} required={true} changeTeam={updateTeam1}></TeamSelection>
+            <TeamSelection className="team-select" label="Home/Neutral" teams={teams} required={true} changeTeam={updateTeam1}></TeamSelection>
         </Grid>
         <Grid item xs={8} sm={3}>
-            <TeamSelection className="team-select" name="Away/Neutral" teams={teams} required={secondRequired} changeTeam={updateTeam2}></TeamSelection>
+            <TeamSelection className="team-select" label="Away/Neutral" teams={teams} required={secondRequired} changeTeam={updateTeam2}></TeamSelection>
         </Grid>
         <Grid item xs={12} className="session-type">
           <RadioGroup defaultValue="game" aria-label="Session Type" name="session-select-group" onChange={handleSessionTypeChange}>
@@ -172,7 +178,6 @@ export default function Index() {
     )
 
     return statesLoaded === statesNeeded ? (<Box>
-        <Navbar/>
         <Box sx={{p:2}}>
         <Grid className="session-manager" container spacing={2}>
           <Grid item xs={12}>

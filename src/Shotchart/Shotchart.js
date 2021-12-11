@@ -17,6 +17,7 @@ import StatCard from "../ComponentTemplates/StatCard.js";
 
 
 
+
 export default class Shotchart extends Component {
   constructor(props) {
     super(props);
@@ -536,7 +537,6 @@ export default class Shotchart extends Component {
     if (this.state.statesNeeded=== this.state.statesLoaded) {
       return (
         <Box>
-          <Navbar/>
           <Box sx={{p: 2}}>
           <Grid container spacing={2} justifyContent="space-evenly" alignItems="center">
             <Grid item md={7} sm={12}>
@@ -578,7 +578,7 @@ export default class Shotchart extends Component {
                         <StatCard name="FGA" content={this.state.sessionFGA}/>
                       </Grid>
                       <Grid item xs={4}>
-                        <StatCard name="FG%" content={(100* this.state.sessionFGM / this.state.sessionFGA).toFixed(1) + "%"}/>
+                        <StatCard name="FG%" content={(100* this.state.sessionFGM / this.state.sessionFGA).toFixed(0) + "%"}/>
                       </Grid>
                     </Grid>
                   </CardContent>
