@@ -115,6 +115,283 @@ export default class Shotchart extends Component {
     }
   }
 
+  createSectionedZones(o, base) {
+    var self = this;
+    // create outside line for rim range
+    // fill based on the circle. This is not a polygon like the other shapes on the visualization
+    this.appendArcPath(base, o.rimRange, -1 * Math.PI, Math.PI, (o.courtWidth / 2),
+        (o.visibleCourtLength - o.basketProtrusionLength - o.basketDiameter / 2), 'rimXY')
+      .attr('class', 'shotzone rim-zone' + self.props.shotchartNumber)
+      .attr("transform", "translate(" + (o.courtWidth / 2) + ", " +
+        (o.visibleCourtLength - o.basketProtrusionLength - o.basketDiameter / 2) + ")");
+    // points must be in order
+    var rc3 = {className: 'shotzone right-corner-three-zone',
+                points: [{x: 0, y: o.visibleCourtLength},
+                          {x: 0, y: o.visibleCourtLength - o.threePointCutoffLength},
+                          {x: (o.courtWidth - o.threePointSideRadius * 2) / 2, y: o.visibleCourtLength - o.threePointCutoffLength},
+                          {x: (o.courtWidth - o.threePointSideRadius * 2) / 2, y: o.visibleCourtLength}]
+              };
+
+    var lc3 = {className: 'shotzone left-corner-three-zone',
+                points: [{x: (o.threePointSideRadius * 2) + ((o.courtWidth - o.threePointSideRadius * 2) / 2),
+                            y:o.visibleCourtLength},
+                          {x: (o.threePointSideRadius * 2) + ((o.courtWidth - o.threePointSideRadius * 2) / 2),
+                            y: o.visibleCourtLength - o.threePointCutoffLength},
+                          {x: o.courtWidth, y:o.visibleCourtLength - o.threePointCutoffLength},
+                          {x: o.courtWidth, y:o.visibleCourtLength}]
+                        };
+    var r3 = {className: 'shotzone right-three-zone',
+              points: [{x: 0, y: 0},
+                        {x: 0, y: o.visibleCourtLength - o.threePointCutoffLength},
+                        {x: (o.courtWidth - o.threePointSideRadius * 2) / 2, y: o.visibleCourtLength - o.threePointCutoffLength}]
+              };
+
+    var r3Line = this.state.threePointLineXY.filter(function(i) {
+      // change this to match up with AP
+      return i.x < o.right3Inside.x
+    });
+
+    r3.points = r3.points.concat(r3Line).concat({x: 5, y: 0});
+
+    var l3Line = this.state.threePointLineXY.filter(function(i) {
+      return i.x >  o.courtWidth - o.left3Inside.x;
+    });
+
+    var l3 = {className: 'shotzone left-three-zone',
+              points: l3Line.concat(
+                [{x: (o.threePointSideRadius * 2) + ((o.courtWidth - o.threePointSideRadius * 2) / 2),
+                    y: o.visibleCourtLength - o.threePointCutoffLength},
+                  {x: o.courtWidth, y: o.visibleCourtLength - o.threePointCutoffLength},
+                  {x: o.courtWidth, y: 0},
+                  {x: o.courtWidth - 5, y: 0}])
+              };
+
+    var m3 = {className: 'shotzone middle-three-zone',
+              points: [{x: 5, y: 0}]
+              };
+
+    var m3Line = this.state.threePointLineXY.filter(function(i) {
+      // change this to match with AP
+      return i.x > o.right3Inside.x  && i.x <  o.courtWidth - o.left3Inside.x
+    })
+
+    m3.points = m3.points.concat(m3Line);
+    m3.points = m3.points.concat([{x: o.courtWidth - 5, y: 0},
+                                  {x: o.courtWidth, y: 0}]);
+
+    var rbmr = {className: 'shotzone right-baseline-midrange-zone',
+                points: [{x: (o.courtWidth - o.threePointSideRadius * 2) / 2, y: o.visibleCourtLength}]
+              };
+
+    var insideRbmr = this.state.floaterXY.filter(function(i) {
+      // change x portion to match AP
+      return i.y <= o.visibleCourtLength && i.y > o.visibleCourtLength - o.leftBaselineMidrangeInside.y &&
+              (i.x < o.courtWidth - o.leftBaselineMidrangeInside.x || i.x < o.courtWidth / 2);
+    })
+
+    rbmr.points = rbmr.points.concat(insideRbmr);
+    rbmr.points = rbmr.points.concat([{x: (o.courtWidth - o.threePointSideRadius * 2) / 2,
+                                        y: o.visibleCourtLength - o.threePointCutoffLength}]);
+
+    var insideLbmr = this.state.floaterXY.filter(function(i) {
+      // change x portion to match AP
+      return i.y <= o.visibleCourtLength && i.y > o.visibleCourtLength - o.rightBaselineMidrangeInside.y &&
+              (i.x > o.courtWidth - o.rightBaselineMidrangeInside.x || i.x > o.courtWidth / 2);
+    })
+
+    var lbmr = {className: 'shotzone left-baseline-midrange-zone',
+                points: insideLbmr.concat([{x: (o.threePointSideRadius * 2) + ((o.courtWidth - o.threePointSideRadius * 2) / 2),
+                                              y:o.visibleCourtLength},
+                                            {x: (o.threePointSideRadius * 2) + ((o.courtWidth - o.threePointSideRadius * 2) / 2),
+                                              y: o.visibleCourtLength - o.threePointCutoffLength}])
+              };
+
+    var insideRwmr = this.state.floaterXY.filter(function(i) {
+      // change x portion to match AP
+      return (i.y < o.visibleCourtLength && i.y >= o.visibleCourtLength - o.rightWingMidrangeInside.y &&
+              (i.x < o.courtWidth / 2)) &&
+              (i.y <= o.visibleCourtLength && i.y < o.visibleCourtLength - o.rightBaselineMidrangeInside.y &&
+                      (i.x < o.courtWidth - o.rightBaselineMidrangeInside.x));
+    });
+
+    var outsideRwmr = r3Line;
+
+    var rwmr = {className: 'shotzone right-wing-midrange-zone',
+                points: outsideRwmr.reverse().concat(insideRwmr)
+              };
+
+    var insideLwmr = this.state.floaterXY.filter(function(i) {
+      // change x portion to match AP
+      return (i.y < o.visibleCourtLength && i.y >= o.visibleCourtLength - o.leftWingMidrangeInside.y &&
+              (i.x > o.courtWidth / 2)) &&
+              (i.y <= o.visibleCourtLength && i.y < o.visibleCourtLength - o.leftBaselineMidrangeInside.y &&
+                      (i.x > o.courtWidth - o.leftBaselineMidrangeInside.x));
+    });
+
+    var outsideLwmr = l3Line
+
+    var lwmr = {className: 'shotzone left-wing-midrange-zone',
+                points: outsideLwmr.concat(insideLwmr.reverse())
+              };
+
+
+    var insideMmr = this.state.floaterXY.filter(function(i) {
+      // change x portion to match AP
+      return i.y < o.visibleCourtLength - o.rightWingMidrangeInside.y;
+    });
+
+    var outsideMmr = m3Line;
+
+    var mmr = {className: 'shotzone middle-midrange-zone',
+                points: outsideMmr.concat(insideMmr.reverse())
+              };
+
+
+    var insideRf = this.state.rimXY.filter(function(i) {
+      return i.y > o.visibleCourtLength - o.rightFloaterInside.y &&
+              (i.x < o.rightFloaterInside.x && i.x < o.courtWidth / 2);
+    });
+
+    var outsideRf = insideRbmr.concat(insideRwmr);
+
+    var rf = {className: 'shotzone right-floater-zone',
+              points: outsideRf.concat(insideRf.reverse())
+              };
+
+
+    var insideLf = this.state.rimXY.filter(function(i) {
+      return i.y > o.visibleCourtLength - o.leftFloaterInside.y &&
+              (i.x > o.leftFloaterInside.x && i.x > o.courtWidth / 2);
+    });
+
+
+    var outsideLf = insideLbmr.reverse().concat(insideLwmr);
+
+    var lf = {className: 'shotzone left-floater-zone',
+              points: insideLf.concat(outsideLf)
+              };
+
+    var insideMf = this.state.rimXY.filter(function(i) {
+      return i.y < o.visibleCourtLength - o.leftFloaterInside.y;
+    });
+
+    var outsideMf = insideMmr;
+
+    var mf = {className: 'shotzone middle-floater-zone',
+              points: outsideMf.concat(insideMf)
+              };
+
+    var zonePoints = {labeledzones: {rc3: rc3.points, lc3: lc3.points, r3: r3.points, l3: l3.points,
+                                      m3: m3.points, rbmr: rbmr.points, lbmr: lbmr.points,
+                                      rwmr: rwmr.points, lwmr: lwmr.points, mmr: mmr.points, lf: lf.points,
+                                      rf: rf.points, mf: mf.points, rim: this.state.rimXY},
+                      lst_zones: [rc3, lc3, r3, l3, m3, rbmr, lbmr,
+                                  rwmr, lwmr, mmr, lf, rf, mf]}
+
+    var self = this;
+    base.selectAll("polygon")
+        .data(zonePoints.lst_zones)
+      .enter().append('polygon')
+        .attr('class', function(d){return d.className + self.props.shotchartNumber})
+        .attr("points",function(d) {
+            return d.points.map(function(d) {
+              return [d.x, d.y].join(",");
+            }).join(" ");
+          });
+
+    this.labelShotZones(o, base, zonePoints)
+  }
+
+  findCentroid(points){
+    let a = 0, x = 0, y = 0, l = points.length;
+
+      for (let i = 0; i < l; i++) {
+        const s = i === l - 1 ? 0 : i + 1,
+              v0 = points[i],
+              v1 = points[s],
+              f = (v0.x * v1.y) - (v1.x * v0.y);
+
+        a += f;
+        x += (v0.x + v1.x) * f;
+        y += (v0.y + v1.y) * f;
+      }
+
+      const d = a * 3;
+
+      return [x / d, y / d];
+  }
+
+  labelShotZones(o, base, zonePoints) {
+    var zoneLookup = {rc3: 'R-C3', lc3: 'L-C3', r3: 'R-ATB', l3: 'L-ATB',
+                      m3: 'M-ATB', rbmr: 'RB-MR', lbmr: 'LB-MR', rwmr: 'RW-MR',
+                      lwmr: 'LW-MR', mmr: 'M-MR', lf: 'L-FL', rf: 'R-FL',
+                      mf: 'M-FL', rim: 'RIM'};
+
+    var zoneCSS = {rc3: 'right-corner-three-zone', lc3: 'left-corner-three-zone', r3: 'right-three-zone', l3: 'left-three-zone',
+                      m3: 'middle-three-zone', rbmr: 'right-baseline-midrange-zone', lbmr: 'left-baseline-midrange-zone', rwmr: 'right-wing-midrange-zone',
+                      lwmr: 'left-wing-midrange-zone', mmr: 'middle-midrange-zone', lf: 'left-floater-zone', rf: 'right-floater-zone',
+                      mf: 'middle-floater-zone', rim: 'rim-zone'};
+
+    for (var key in zoneLookup) {
+      var tempData = this.findShotZoneData(zoneLookup[key])[0];
+      tempData = (tempData == null) ? {fga: 0, fgm: 0, percentile: 0} : tempData;
+      var center = this.findCentroid(zonePoints.labeledzones[key])
+      var prettyFormat;
+
+      if (key == 'rim') {
+        prettyFormat = {top: -1.5, bottom: 3, left: 0, right: 0};
+      } else if (key == 'mf') {
+        prettyFormat = {top: 0, bottom: 3, left: 0, right: 0};
+      } else if (key == 'lf' && o.league == 'nba') {
+        prettyFormat = {top: 0, bottom: 2, left: 0, right: 2}
+      } else if (key == 'rf' && o.league == 'nba') {
+        prettyFormat = {top: 0, bottom: 2, left: -2, right: 0};
+      } else {
+        prettyFormat = {top: 0, bottom: 2, left: 0, right: 0};
+      }
+      base.append('text')
+          .text(tempData.fgm + '/' + tempData.fga)
+          .attr('x', center[0] + prettyFormat.left + prettyFormat.right)
+          .attr('y', center[1] + prettyFormat.top)
+          .style('text-anchor', 'middle')
+          .attr('class', zoneCSS[key] + '-text')
+
+      base.append('text')
+        .text(this.getPrettyPercentage(tempData.fgm, tempData.fga))
+        .attr('x', center[0] + prettyFormat.left + prettyFormat.right)
+        .attr('y', center[1] + prettyFormat.bottom)
+        .style('text-anchor', 'middle')
+        .attr('class', zoneCSS[key] + '-text')
+
+      d3.select('.' + zoneCSS[key] + this.props.shotchartNumber)
+        .style('fill', this.shotZoneColor(tempData.percentile));
+      }
+  }
+
+  createColorScale() {
+    var colors = d3.scaleLinear()
+    .domain([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
+    .range(["#053061", "#2166ac", "#4393c3", "#92c5de",
+      "#d1e5f0", "#fddbc7", "#f4a582", "#d6604d", "#b2182b", "#67001f"]);
+    return colors
+  }
+
+  shotZoneColor(perc) {
+    var colors = this.createColorScale();
+    return colors(perc)
+  }
+
+  getPrettyPercentage(fgm, fga) {
+    if (fga == 0) return '0%';
+    return (((fgm / fga) * 10000) / 100).toFixed(1) + '%';
+  }
+
+  findShotZoneData(shotzone){
+    return this.props.visibleShotData.filter(function(i) {
+      return i.bucket == shotzone;
+    });
+  }
+
 
   // helper function to create an arcs (restricted, 3 point line, free throw circle)
   appendArcPath(base, radius, startAngle, endAngle, translateX, translateY, xyState) {
@@ -277,7 +554,10 @@ export default class Shotchart extends Component {
       .attr("cx", o.courtWidth / 2)
       .attr("cy", o.visibleCourtLength - o.basketProtrusionLength - o.basketDiameter / 2)
       .attr("r", o.basketDiameter / 2)
-    }
+
+    this.createSectionedZones(o, base);
+
+  }
 
   componentDidMount() {
     this.drawCourt();
