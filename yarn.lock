@@ -10734,6 +10734,11 @@ react-scripts@^4.0.3:
   optionalDependencies:
     fsevents "^2.1.3"
 
+react-svg-to-image@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-svg-to-image/-/react-svg-to-image-3.0.0.tgz#90829a2efd0634b3aeb2a21581a4883fe66f7617"
+  integrity sha512-6qV45Sx+2H4GSXlkoMc4msOhwXCLvTgkei8TybzIthBAVVvUrL4E2VuY1T9rduInnXajqkY+X5XKGHYteUlLZQ==
+
 react-transition-group@^4.4.0, react-transition-group@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.2.tgz#8b59a56f09ced7b55cbd53c36768b922890d5470"

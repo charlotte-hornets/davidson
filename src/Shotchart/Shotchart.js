@@ -547,7 +547,7 @@ export default class Shotchart extends Component {
             <Grid item md={4} sm={12} >
             
             <Grid container spacing={4}>
-            <Grid item xs={12}>
+              <Grid item xs={12}>
                 <Card variant="outlined">
                   <CardContent>
                     <Grid container spacing={2} justifyContent="space-around" alignItems="center">
@@ -562,7 +562,7 @@ export default class Shotchart extends Component {
                     </Grid>
                   </CardContent>
                 </Card>
-                </Grid>
+              </Grid>
               <Grid item xs={12}>
                 <Sidebar header={"LATEST SHOT"} content={<LatestShot data={this.state.latest_shot}/>}/>
               </Grid>

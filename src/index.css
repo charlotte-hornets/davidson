@@ -207,3 +207,7 @@ circle.shot-circle:hover {
 .team-select {
   width: 100%;
 }
+
+#court-analysis-diagram {
+  width: 100% !important;
+}

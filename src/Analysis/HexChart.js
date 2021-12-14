@@ -287,12 +287,12 @@ export default class Shotchart extends Component {
     console.log(inputForHexbinFun)
 
         // Prepare a color palette
-    var color = d3.scaleSequential(d3.interpolateLab("#494949", "#AC1A2F"))
+    var color = d3.scaleSequential(d3.interpolateLab("#023047", "#fb8500"))
         .domain([0, 1]);
 
       // Compute the hexbin data
     var hexbin = d3Hexbin.hexbin()
-      .radius(2) // size of the bin in px
+      .radius(2.225) // size of the bin in px
       .extent([ [0, 0], [width, height] ])
 
     // Plot the hexbins
@@ -335,7 +335,7 @@ export default class Shotchart extends Component {
 
   render() {
     return <Box>
-        <svg id="court-diagram" style={{width: "100%"}} ref={node => this.node = node} ></svg>
+        <svg id="court-analysis-diagram" style={{width: "100%"}} ref={node => this.node = node} ></svg>
       </Box>
   }
 }

@@ -17,7 +17,7 @@ export default function ButtonAppBar() {
             'CAT CHARTS
           </Typography>
           <NavButton color="inherit" url="/" text="Input" />
-          <NavButton color="inherit" url="/analysis?team=davidson" text="Analysis"/>
+          <NavButton color="inherit" url="/analysis?defaultTeam=281" text="Analysis"/>
         </Toolbar>
       </AppBar>
     </Box>
