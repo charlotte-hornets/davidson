@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: white;
 }
 
 code {
@@ -76,12 +77,13 @@ code {
 }
 
 .data-entry {
-  padding-top: 2vw;
-  max-height: 60vw;
+  padding-top: 2vh;
+  max-height: 65vh;
   overflow-y: auto;
+  padding-bottom: 2vh;
 }
 
-.submit-button {
+.data-submit-button {
   padding-top: 2vw;
 }
 
@@ -140,11 +142,6 @@ code {
   stroke-opacity: 1;
 }
 
-svg {
-  display: block;
-  margin: auto;
-}
-
 #shot-chart-legend rect {
   fill-opacity: 0.7;
 }
@@ -154,15 +151,17 @@ svg {
   font-size: 0.05vw;
 }
 
-.team-select {
+.select {
   width: 15%;
   display: inline-block;
   padding-top: 0.5vw;
-  padding-left: 1vw;
+  padding-right: 1vw;
+  padding-bottom: 0.5vw;
 }
 
 .settings {
   padding-left: 1vw;
+  padding-bottom: 5px;
 }
 
 .session-manager {
@@ -171,4 +170,44 @@ svg {
 
 .session-type {
   padding-top: 1vw;
+}
+
+.session-submit-button {
+  padding-top: 1vw;
+}
+
+.loading-screen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
+
+.loading-circle {
+  position: absolute;
+  top: -25%;
+  left: 50%;
+  margin: -35px 0 0 -35px;
+}
+
+.loading-tip {
+  text-align: center;
+}
+
+#shotchart-page-content {
+  padding: 0% 2.5%;
+}
+
+circle.shot-circle:hover {
+  stroke: black;
+  stroke-width: 0.5%;
+}
+
+.team-select {
+  width: 100%;
+}
+
+#court-analysis-diagram {
+  width: 100% !important;
 }

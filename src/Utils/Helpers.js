@@ -36,6 +36,10 @@ export default class Helpers {
         return this.fetchMethod(url, "GET", null);
     }
 
+    static deleteFetch(url, data) {
+        return this.fetchMethod(url, "DELETE", data);
+    }
+
     static postFetch(url, data) {
         return this.fetchMethod(url, "POST", data);
     }

@@ -1,0 +1,34 @@
+import React from "react";
+import { Typography } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
+
+export default function LatestShot(props) {
+    const data = props.data;
+    console.log(data);
+    const player = data.personname;
+    const made = data.make === 1 ? "Make" : "Miss";
+    const contest = data.contesttype;
+    const shottype = data.shottype;
+
+    return (
+        <Grid container spacing={2}>
+            <Grid item sm={6} xs={12}>
+                <Typography variant="p" style={{fontWeight: 700}}>PLAYER<br/></Typography>
+                <Typography variant="p">{player}</Typography>
+            </Grid>
+            <Grid item sm={6} xs={12}>
+                <Typography variant="p" style={{fontWeight: 700}}>SHOT TYPE<br/></Typography>
+                <Typography variant="p">{shottype}</Typography>
+            </Grid>
+            <Grid item sm={6} xs={12}>
+                <Typography variant="p" style={{fontWeight: 700}}>RESULT<br/></Typography>
+                <Typography variant="p">{made}</Typography>
+            </Grid>
+            <Grid item sm={6} xs={12}>
+                <Typography variant="p" style={{fontWeight: 700}}>CONTEST<br/></Typography>
+                <Typography variant="p">{contest}</Typography>
+            </Grid>
+        </Grid>
+    )
+    
+}

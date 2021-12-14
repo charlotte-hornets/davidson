@@ -5,8 +5,17 @@ import Popup from "./Popup.js";
 import DataEntry from "./DataEntry.js";
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { Redirect } from "react-router";
-import {Link, useLocation} from "react-router-dom";
+import Undo from "./Undo.js";
+import LoadingPage from "../PageTemplates/LoadingPage.js";
+import Sidebar from "../ComponentTemplates/Sidebar";
+import LatestShot from "./LatestShot.js";
+import Navbar from "../ComponentTemplates/Navbar"
+import { Card, CardContent, Grid, Box, Tooltip } from "@material-ui/core";
+import { textAlign } from "@material-ui/system";
+import { Typography } from "@material-ui/core";
+import StatCard from "../ComponentTemplates/StatCard.js";
+
+
 
 
 export default class Shotchart extends Component {
@@ -14,18 +23,30 @@ export default class Shotchart extends Component {
     super(props);
     var leagueid = 'coll';
     this.state = {
+        // loading and loading check variables
+        statesLoaded: 0,
+        statesNeeded: 2,
+        // validation of valid session info
         hasSessionInfo: true,
-        sessionID: null,
+        // session info
+        sessionid: null,
         team1: null,
         team2: null,
         players: [],
+        // circle display
         multipleShotView: false,
-        popupShow: false,
         circle_show: false,
+        // form info
+        popupShow: false,
+        // values to pass into DataEntry
         current_x: "N/A",
         current_y: "N/A",
-        latest_shot: {"x_coord": null, "y_coord": null},
+        current_round: 1,
+        // data on latest shot
+        latest_shot: {"x": null, "y": null},
         shotList: [],
+        sessionFGA: 0,
+        sessionFGM: 0,
         threePointLineXY: [],
         chartSettings: {
         // all measurements are in feet...
@@ -263,15 +284,69 @@ export default class Shotchart extends Component {
     // grab our players and teams for selecting a shot
     // next steps: call the player API when a team is selected
     // /players?teamid={teamid}
+    
+    this.updateSessionInfo();
 
-    try {
-      this.updateSessionInfo();
-    } catch (error) {
-      this.setState(() => {
-        return {hasSessionInfo: false}
-      })
-      console.log(error)
-      console.log("BIG ERROR")
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+
+    if(urlParams.get('team2') !== "" && urlParams.get('team2') !== "null") {
+      this.setState({statesNeeded: this.state.statesNeeded+1})
+    }
+
+    if (urlParams.has('team1') && urlParams.has('sessionid')) {
+      if (urlParams.get('team1') !== "null"){
+        Helpers.getFetch('/team/roster?teamid=' + urlParams.get('team1') + '&seasonyear=2021')
+          .then(res => {
+          res.json().then(data => {
+              this.setState({players: data})
+              this.setState({statesLoaded: this.state.statesLoaded + 1})
+          })
+          }).catch(err => {
+              console.log(err);
+              window.location = '/';
+          })
+      }
+      
+      if (urlParams.get('sessionid') !== "null"){
+        Helpers.getFetch('/davidson/shots?sessionid='+urlParams.get('sessionid'))
+        .then(res => {
+        res.json().then(data => {
+          if (data.length !== 0){
+            this.setState({
+              statesLoaded: this.state.statesLoaded + 1, 
+              shotList: data, 
+              latest_shot: data.slice(-1).pop(),
+              circle_show: true
+            })
+            this.updateStats();
+          } else {
+            this.setState({
+              statesLoaded: this.state.statesLoaded + 1,
+              circle_show: false
+            })
+          }
+        })
+        }).catch(err => {
+            console.log(err);
+            window.location = '/';
+        })
+      }
+
+      if (urlParams.get('team2') !== "" && urlParams.get('team2') !== "null") {
+        Helpers.getFetch('/team/roster?teamid=' + urlParams.get('team2') + '&seasonyear=2021')
+          .then(res => {
+          res.json().then(data => {
+              this.setState({players: this.state.players.concat(data)})
+              this.setState({statesLoaded: this.state.statesLoaded + 1})
+          })
+          }).catch(err => {
+              console.log(err);
+              window.location = '/';
+          })
+      }
+    } else {
+      window.location = '/'
     }
   }
 
@@ -287,7 +362,7 @@ export default class Shotchart extends Component {
     pt.x = x;
     pt.y = y;
     const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
-    this.setState((state, props) => {
+    this.setState(() => {
       return {current_x: svgP.x, current_y: svgP.y, popupShow: true}
     });
   }
@@ -298,13 +373,104 @@ export default class Shotchart extends Component {
     })
   }
 
-  updateShotList = (newData) => {
-    this.setState(prevList => {
-      return {
-        latest_shot: newData, 
-        shotList: [...prevList.shotList, newData]
+  updateStats = () => {
+    console.log("called")
+    const shotsTaken = this.state.shotList.length;
+    if (shotsTaken === 0) {
+    } else {
+      let sum = 0
+      this.state.shotList.forEach(item => {
+        sum = sum + item.make}
+      )
+      this.setState({
+        sessionFGA: this.state.shotList.length,
+        sessionFGM: sum
+      })
+      console.log(this.state.sessionFGA, this.state.sessionFGM)
+    }
+  }
+
+  submitShotList = (newData) => {
+    this.setState({current_round: newData.round});
+    Helpers.postFetch("/davidson/shots", JSON.stringify([{
+      sessionid: parseInt(this.state.sessionid),
+      teamseasonid: newData.teamseasonid,
+      playerid: newData.playerid,
+      x: newData.x_coord,
+      y: newData.y_coord,
+      dateadded: new Date(),
+      make: newData.shotMade,
+      round: newData.round,
+      contesttype: newData.contested,
+      shottype: newData.shotType
+    }]))
+    .then(res => {
+      if (res.status !== 201) {
+        console.log('error with post fetch');
+      } else {
+        Helpers.getFetch('/davidson/shots?sessionid='+this.state.sessionid)
+        .then(res => {
+        res.json().then(data => {
+          if (data.length !== 0){
+            this.setState({
+              shotList: data, 
+              latest_shot: data.slice(-1).pop(),
+            })
+            this.setState({circle_show: true});
+            this.updateStats();
+          } else {
+            this.setState({
+              circle_show: false
+            })
+          }
+        })
+        }).catch(err => {
+            console.log(err);
+            window.location = '/';
+        })
       }
-    })
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
+  undoShotList = () => {
+    if (this.state.shotList.length !== 0) {
+      Helpers.deleteFetch("/davidson/shots", JSON.stringify([this.state.latest_shot]))
+      .then(res => {
+        if (res.status !== 202) {
+          console.log('error with delete fetch');
+        } else {
+          Helpers.getFetch('/davidson/shots?sessionid='+this.state.sessionid)
+            .then(res => {
+            res.json().then(data => {
+              if (data.length !== 0){
+                this.setState({
+                  shotList: data, 
+                  latest_shot: data.slice(-1).pop(),
+                  
+                })
+                this.setState({circle_show: true});
+                this.updateStats();
+              } else {
+                this.setState({
+                  circle_show: false
+                })
+              }
+            })
+            }).catch(err => {
+                console.log(err);
+                window.location = '/';
+            })
+        }
+      }).catch(err => {
+        console.log(err);
+      });
+      
+
+    } else {
+      console.log("nothing to undo")
+    }
   }
 
   updateMultipleShot = () => {
@@ -319,35 +485,118 @@ export default class Shotchart extends Component {
     })
   }
 
-
   updateSessionInfo = () => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
     this.setState({
-      sessionID: this.props.location.state.sessionID,
-      players: this.props.location.state.players,
-      team1: this.props.location.state.team1,
-      team2: this.props.location.state.team2,
-      hasSessionInfo: true
+      sessionid: urlParams.get('sessionid'),
+      team1: urlParams.get('team1'),
+      team2: urlParams.get('team2'),
     })
+    if (this.state.team1 === null) {
+      this.setState({
+        hasSessionInfo: false
+      })
+    }
+  }
+
+  getFGPercent = () => {
+    console.log("called")
+    const shotsTaken = this.state.shotList.length;
+    if (shotsTaken === 0) {
+      return "0%"
+    } else {
+      let sum = 0
+      this.state.shotList.forEach(item => {
+        sum = sum + item.make}
+      )
+      console.log(sum / shotsTaken)
+
+    }
   }
 
 
   render() {
-    console.log(this.state.hasSessionInfo)
-    let circles = this.state.multipleShotView ? this.state.shotList.map((shot, index) => <circle key={index+1} fill={shot['shotMade'] === 1 ? "green" : "red"} r="2%" cx={shot['x_coord']} cy={shot['y_coord']}/>) : this.state.circle_show ? <circle fill={this.state.latest_shot['shotMade'] === 1 ? "green" : "red"} r="2%" cx={this.state.latest_shot['x_coord']} cy={this.state.latest_shot['y_coord']}/> : null;
-    return this.state.hasSessionInfo ? (<div>
+    // creating circles and tooltip depending on shot view type
+    let circles = this.state.multipleShotView ? this.state.shotList.map((shot, index) => 
+      <Tooltip title={<React.Fragment>
+        <Typography variant="p">Shooter: {shot.personname}</Typography><br/>
+        <Typography variant="p">Round: {shot.round}</Typography><br/><Typography variant="p">Shot Type: {shot.shottype}</Typography><br/>
+        <Typography variant="p">Shot Contest: {shot.contesttype}</Typography><br/></React.Fragment>}>
+        <circle className="shot-circle" key={index+1} fill={shot['make'] === 1 ? "#90BE6D" : "#F94144"} r="1%" cx={shot.x} cy={shot.y}/>
+      </Tooltip>
+    ) : this.state.circle_show ? (
+      <Tooltip title={<React.Fragment>
+        <Typography variant="p">Shooter: {this.state.latest_shot.personname}</Typography><br/>
+        <Typography variant="p">Round: {this.state.latest_shot.round}</Typography><br/>
+        <Typography variant="p">Shot Type: {this.state.latest_shot.shottype}</Typography><br/>
+        <Typography variant="p">Shot Contest: {this.state.latest_shot.contesttype}</Typography><br/></React.Fragment>}>
+        <circle className="shot-circle" key={this.state.shotList.length+1} fill={this.state.latest_shot['make'] === 1 ? "#90BE6D" : "#F94144"} r="1%" cx={this.state.latest_shot.x} cy={this.state.latest_shot.y}/></Tooltip>
+    ) : null;
 
-      <div className="settings">
-        <h2>Settings</h2>
-        <div>
-            <FormControlLabel className="display-switch" control={<Switch color="error" onClick={this.updateMultipleShot} value={this.state.multipleShotView}/>} label="Multiple Shot View"/>
-        </div>
+    if (this.state.statesNeeded=== this.state.statesLoaded) {
+      return (
+        <Box>
+          <Box sx={{p: 2}}>
+          <Grid container spacing={2} justifyContent="space-evenly" alignItems="center">
+            <Grid item md={7} sm={12}>
+              <svg id="court-diagram" style={{width: "100%"}} ref={node => this.node = node} onClick={this.clicked}>{this.state.circle_show ? circles: null}</svg>
+              {this.state['popupShow'] ? <Popup header={"SHOT DATA ENTRY"} closePopup={this.closeEntry} content={<DataEntry players={this.state.players} round={this.state.current_round} x_coord={this.state['current_x']} y_coord={this.state['current_y']} submitData={this.submitShotList} showCircle={this.updateCircleShow} closePopup={this.closeEntry} showClose={true}/>} showClose={true}/> : null}
+            </Grid>
+            <Grid item />
+            <Grid item md={4} sm={12} >
+            
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Card variant="outlined">
+                  <CardContent>
+                    <Grid container spacing={2} justifyContent="space-around" alignItems="center">
+                      <Grid item xs={12}><Typography variant="h2">OPTIONS</Typography></Grid>
+                      <Grid item xs={5} style={{textAlign: "center"}}>
+                          <FormControlLabel className="display-switch" control={<Switch color="primary" onClick={this.updateMultipleShot} value={this.state.multipleShotView}/>} label="Multiple Shots"/>
+                      </Grid>
+                      <Grid item/>
+                      <Grid item xs={5} style={{textAlign: "center"}}>
+                          <Undo undoFunction={this.undoShotList}/>
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12}>
+                <Sidebar header={"LATEST SHOT"} content={<LatestShot data={this.state.latest_shot}/>}/>
+              </Grid>
+              <Grid item xs={12}>
+                <Card variant="outlined">
+                  <CardContent>
+                    <Grid container spacing={1} justifyContent="space-evenly" alignItems="center">
+                      <Grid item xs={12}><Typography variant="h2">SESSION STATS</Typography></Grid>
+                      <Grid item xs={4}>
+                        <StatCard name="FGM" content={this.state.sessionFGM}/>
+                      </Grid>
+                      <Grid item xs={4}>
+                        <StatCard name="FGA" content={this.state.sessionFGA}/>
+                      </Grid>
+                      <Grid item xs={4}>
+                        <StatCard name="FG%" content={(100* this.state.sessionFGM / this.state.sessionFGA).toFixed(0) + "%"}/>
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              </Grid>
+            </Grid>
+
+          </Grid>
+          </Box>
+        </Box>
+      );
+    } else {
+      return <div>
+        <LoadingPage loaded={this.state.statesLoaded} needed={this.state.statesNeeded} />
       </div>
-
-      <div style={{width: '50%', display: "flex", margin: 'auto'}}>
-        <svg id="court-diagram" ref={node => this.node = node} onClick={this.clicked}>{this.state.circle_show ? circles: null}</svg>
-        {this.state['popupShow'] ? <Popup header={"Data Entry"} closePopup={this.closeEntry} content={<DataEntry players={this.state.players} x_coord={this.state['current_x']} y_coord={this.state['current_y']} submitData={this.updateShotList} showCircle={this.updateCircleShow} closePopup={this.closeEntry} showClose={true}/>} showClose={true}/> : null}
-      </div>
-
-    </div>) : <Redirect to="/" />;
+    }
+  
   }
 }
