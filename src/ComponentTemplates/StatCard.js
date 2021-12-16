@@ -1,6 +1,5 @@
-import { Card, CardHeader, CardContent, Typography } from "@material-ui/core";
+import { Card, CardContent, Typography } from "@material-ui/core";
 import { Box } from "@material-ui/system";
-import { theme } from "../theme";
 
 export default function StatCard(props) {
     return <Box>

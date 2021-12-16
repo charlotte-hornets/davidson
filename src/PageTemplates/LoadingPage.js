@@ -21,8 +21,6 @@ export default function LoadingPage(props) {
     useEffect(() => {
         setLoadingTip(tips[Math.floor(Math.random()*tips.length)])
     }, []);
-
-    console.log(props.loaded, props.needed)
     return <div className="loading-screen">
         <Grid container justifyContent="center" alignItems="center" spacing={2} style={{height: "100%"}}>
             <Grid item xs={12}>

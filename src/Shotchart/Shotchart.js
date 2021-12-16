@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import * as d3 from 'd3'
+import * as d3Hexbin from "d3-hexbin";
 import Helpers from '../Utils/Helpers.js';
 import Popup from "./Popup.js";
 import DataEntry from "./DataEntry.js";
@@ -9,20 +10,18 @@ import Undo from "./Undo.js";
 import LoadingPage from "../PageTemplates/LoadingPage.js";
 import Sidebar from "../ComponentTemplates/Sidebar";
 import LatestShot from "./LatestShot.js";
-import Navbar from "../ComponentTemplates/Navbar"
 import { Card, CardContent, Grid, Box, Tooltip } from "@material-ui/core";
-import { textAlign } from "@material-ui/system";
 import { Typography } from "@material-ui/core";
 import StatCard from "../ComponentTemplates/StatCard.js";
-
-
 
 
 export default class Shotchart extends Component {
   constructor(props) {
     super(props);
     var leagueid = 'coll';
+    console.log(this.props.variant)
     this.state = {
+        variant: this.props.variant,
         // loading and loading check variables
         statesLoaded: 0,
         statesNeeded: 2,
@@ -434,11 +433,26 @@ export default class Shotchart extends Component {
           o.visibleCourtLength = threePointLength +
             (halfCourtLength - threePointLength) / 2;
     }
+    
 
     // create visibility dimensions
     calculateVisibleCourtLength()
 
+    const width = o.courtWidth
+    const height = o.visibleCourtLength
+
     const node = this.node
+
+    var background = d3.select(node)
+      .attr('width', o.width)
+      .attr('viewBox', "0 0 " + width + " " + height)
+
+    background.append("rect")
+      .attr("fill", this.state.variant === undefined ? "transparent" : "white")
+      .attr("width", width)
+      .attr("height", height);
+
+
     // create base SVG canvas to draw court on
     var base = d3.select(node)
       .attr('width', o.width)
@@ -555,7 +569,65 @@ export default class Shotchart extends Component {
       .attr("cy", o.visibleCourtLength - o.basketProtrusionLength - o.basketDiameter / 2)
       .attr("r", o.basketDiameter / 2)
 
-    this.createSectionedZones(o, base);
+    if (this.state.variant === "hex") {
+      var chart = d3.select(node)
+        .attr('width', o.width)
+        .attr('viewBox', "0 0 " + 50 + " " + 36.573)
+
+
+      var data = this.props.data
+
+      var x = d3.scaleLinear()
+        .domain([0, 50])
+        .range([0, width])
+
+        // Add Y axis
+      var y = d3.scaleLinear()
+        .domain([0, 36.573])
+        .range([ 0, height]);
+
+      var inputForHexbinFun = []
+        data.forEach(function(d) {
+          inputForHexbinFun.push( [x(d.x), y(d.y), d.make] )  // Note that we had the transform value of X and Y !
+      })
+
+
+          // Prepare a color palette
+      var color = d3.scaleSequential(d3.interpolateLab("#023047", "#fb8500"))
+          .domain([0, 1]);
+
+        // Compute the hexbin data
+      var hexbin = d3Hexbin.hexbin()
+        .radius(2.225) // size of the bin in px
+        .extent([ [0, 0], [width, height] ])
+
+      // Plot the hexbins
+      chart.append("clipPath")
+          .attr("id", "clip")
+        .append("rect")
+          .attr("width", width)
+          .attr("height", height)
+
+      chart.append("g")
+          .attr("clip-path", "url(#clip)")
+        .selectAll("path")
+        .data( hexbin(inputForHexbinFun) )
+        .enter().append("path")
+          .attr("d", hexbin.hexagon())
+          .attr("opacity", "85%")
+          .attr("transform", function(d) { 
+            return "translate(" + d.x + "," + d.y + ")"; 
+          })
+          .attr("fill", function(d) {
+            const group = d.slice(0)
+            let sum = 0
+            group.forEach((item) => {
+              sum = sum + item[2]
+            })
+            return color(sum / group.length); })
+    } else if (this.props.variant === "map") {
+      this.createSectionedZones(o, base);
+    }
 
   }
 
@@ -570,65 +642,69 @@ export default class Shotchart extends Component {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
 
-    if(urlParams.get('team2') !== "" && urlParams.get('team2') !== "null") {
-      this.setState({statesNeeded: this.state.statesNeeded+1})
-    }
 
-    if (urlParams.has('team1') && urlParams.has('sessionid')) {
-      if (urlParams.get('team1') !== "null"){
-        Helpers.getFetch('/team/roster?teamid=' + urlParams.get('team1') + '&seasonyear=2021')
+    if (this.state.variant === undefined) {
+      if(urlParams.get('team2') !== "" && urlParams.get('team2') !== "null") {
+        this.setState({statesNeeded: this.state.statesNeeded+1})
+      }
+
+      if (urlParams.has('team1') && urlParams.has('sessionid')) {
+        if (urlParams.get('team1') !== "null"){
+          Helpers.getFetch('/team/roster?teamid=' + urlParams.get('team1') + '&seasonyear=2021')
+            .then(res => {
+            res.json().then(data => {
+                this.setState({players: data})
+                this.setState({statesLoaded: this.state.statesLoaded + 1})
+            })
+            }).catch(err => {
+                console.log(err);
+                window.location = '/';
+            })
+        }
+        
+        if (urlParams.get('sessionid') !== "null") {
+          Helpers.getFetch('/davidson/shots?sessionid='+urlParams.get('sessionid'))
           .then(res => {
           res.json().then(data => {
-              this.setState({players: data})
-              this.setState({statesLoaded: this.state.statesLoaded + 1})
+            if (data.length !== 0){
+              this.setState({
+                statesLoaded: this.state.statesLoaded + 1, 
+                shotList: data, 
+                latest_shot: data.slice(-1).pop(),
+                circle_show: true
+              })
+              this.updateStats();
+            } else {
+              this.setState({
+                statesLoaded: this.state.statesLoaded + 1,
+                circle_show: false
+              })
+            }
           })
           }).catch(err => {
               console.log(err);
               window.location = '/';
           })
-      }
-      
-      if (urlParams.get('sessionid') !== "null"){
-        Helpers.getFetch('/davidson/shots?sessionid='+urlParams.get('sessionid'))
-        .then(res => {
-        res.json().then(data => {
-          if (data.length !== 0){
-            this.setState({
-              statesLoaded: this.state.statesLoaded + 1, 
-              shotList: data, 
-              latest_shot: data.slice(-1).pop(),
-              circle_show: true
-            })
-            this.updateStats();
-          } else {
-            this.setState({
-              statesLoaded: this.state.statesLoaded + 1,
-              circle_show: false
-            })
-          }
-        })
-        }).catch(err => {
-            console.log(err);
-            window.location = '/';
-        })
-      }
+        }
 
-      if (urlParams.get('team2') !== "" && urlParams.get('team2') !== "null") {
-        Helpers.getFetch('/team/roster?teamid=' + urlParams.get('team2') + '&seasonyear=2021')
-          .then(res => {
-          res.json().then(data => {
-              this.setState({players: this.state.players.concat(data)})
-              this.setState({statesLoaded: this.state.statesLoaded + 1})
-          })
-          }).catch(err => {
-              console.log(err);
-              window.location = '/';
-          })
+        if (urlParams.get('team2') !== "" && urlParams.get('team2') !== "null") {
+          Helpers.getFetch('/team/roster?teamid=' + urlParams.get('team2') + '&seasonyear=2021')
+            .then(res => {
+            res.json().then(data => {
+                this.setState({players: this.state.players.concat(data)})
+                this.setState({statesLoaded: this.state.statesLoaded + 1})
+            })
+            }).catch(err => {
+                console.log(err);
+                window.location = '/';
+            })
+        }
+      } else {
+        window.location = '/'
       }
-    } else {
-      window.location = '/'
     }
   }
+
 
   componentDidUpdate() {
     this.drawCourt();
@@ -797,6 +873,7 @@ export default class Shotchart extends Component {
 
 
   render() {
+    if (this.state.variant === undefined) {
     // creating circles and tooltip depending on shot view type
     let circles = this.state.multipleShotView ? this.state.shotList.map((shot, index) => 
       <Tooltip title={<React.Fragment>
@@ -815,8 +892,7 @@ export default class Shotchart extends Component {
     ) : null;
 
     if (this.state.statesNeeded=== this.state.statesLoaded) {
-      return (
-        <Box>
+      return <Box>
           <Box sx={{p: 2}}>
           <Grid container spacing={2} justifyContent="space-evenly" alignItems="center">
             <Grid item md={7} sm={12}>
@@ -867,16 +943,23 @@ export default class Shotchart extends Component {
 
               </Grid>
             </Grid>
-
           </Grid>
           </Box>
         </Box>
-      );
     } else {
       return <div>
         <LoadingPage loaded={this.state.statesLoaded} needed={this.state.statesNeeded} />
       </div>
     }
+  } else if (this.state.variant === "hex") {
+    return <div style={{width: "100%"}}>
+        <svg id="court-analysis-diagram"  style={{width: "100%"}} ref={node => this.node = node} ></svg>
+      </div>
+  } else {
+    return <Box>
+      shot chart type not defined
+    </Box>
+  }
   
   }
 }

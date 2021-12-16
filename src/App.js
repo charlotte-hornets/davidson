@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 import Index from './Index/Index.js';
 import Shotchart from './Shotchart/Shotchart.js';
-import Test from './test/Test.js';
 import { ThemeProvider } from '@mui/material';
 import { theme } from './theme';
 import Analysis from "./Analysis/Analysis.js";
@@ -24,7 +23,7 @@ export default function App() {
         <Switch>
           <Route exact path="/" component={Index}/>
           <Route path="/shotchart" component ={Shotchart}/>
-          <Route path="/analysis" component ={Analysis}/>
+          <Route path="/analysis" component={Analysis}/>
         </Switch>
       </div>
     </Router>

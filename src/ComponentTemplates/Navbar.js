@@ -3,10 +3,7 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import NavButton from './NavButton';
-import { ThemeProvider } from '@mui/material';
-import { theme } from '../theme';
 
 export default function ButtonAppBar() {
   return (

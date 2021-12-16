@@ -12,7 +12,6 @@ import Helpers from '../Utils/Helpers.js';
 import { Grid, MenuItem, Typography } from "@material-ui/core";
 import { useEffect } from "react";
 import LoadingPage from "../PageTemplates/LoadingPage";
-import Navbar from "../ComponentTemplates/Navbar";
 import { Box } from "@material-ui/system";
 import { FormControl } from "@material-ui/core"
 
