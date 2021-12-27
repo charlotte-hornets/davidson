@@ -490,6 +490,8 @@ export default class Shotchart extends Component {
           (o.visibleCourtLength - o.basketProtrusionLength - o.basketDiameter / 2) +
           ")");
 
+    
+
 
 
     // create three point line standout
@@ -568,6 +570,12 @@ export default class Shotchart extends Component {
       .attr("cx", o.courtWidth / 2)
       .attr("cy", o.visibleCourtLength - o.basketProtrusionLength - o.basketDiameter / 2)
       .attr("r", o.basketDiameter / 2)
+
+    this.appendArcPath(base, o.floaterRange, -1 * Math.PI, Math.PI, (o.courtWidth / 2),
+      (o.visibleCourtLength - o.basketProtrusionLength - o.basketDiameter / 2), 'floaterXY')
+        .attr('class', 'shotzone floater')
+        .attr("transform", "translate(" + (o.courtWidth / 2) + ", " +
+          (o.visibleCourtLength - o.basketProtrusionLength - o.basketDiameter / 2) + ")");
 
     if (this.state.variant === "hex") {
       var chart = d3.select(node)
