@@ -176,8 +176,8 @@ export default function Index() {
       </Grid>
     )
 
-    return statesLoaded === statesNeeded ? (<Box>
-        <Box sx={{p:2}}>
+    return statesLoaded === statesNeeded ? (<Box sx={{p: 2}}>
+        <Box sx={{p:2, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", background: "#FFF", borderRadius: 2.5, width: "50%"}}>
         <Grid className="session-manager" container spacing={2}>
           <Grid item xs={12}>
               <Typography variant="h1">SESSION MANAGER</Typography>

@@ -2,7 +2,7 @@
 import React from "react";
 import {
   BrowserRouter as Router,
-  Switch,
+  Routes,
   Route
 } from "react-router-dom";
 import Index from './Index/Index.js';
@@ -20,11 +20,11 @@ export default function App() {
       <div>
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
-        <Switch>
-          <Route exact path="/" component={Index}/>
-          <Route path="/shotchart" component ={Shotchart}/>
-          <Route path="/analysis" component={Analysis}/>
-        </Switch>
+        <Routes>
+          <Route exact path="/" element={<Index/>}/>
+          <Route path="/shotchart" element ={<Shotchart/>}/>
+          <Route path="/analysis" element={<Analysis/>}/>
+        </Routes>
       </div>
     </Router>
     </ThemeProvider>

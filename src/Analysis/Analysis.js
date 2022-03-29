@@ -2,15 +2,11 @@ import React from "react";
 import { useEffect } from "react";
 import Helpers from "../Utils/Helpers";
 import { Box } from "@material-ui/system"
-import { FormGroup, TextField } from "@mui/material";
-import { MenuItem, FormControl } from "@material-ui/core";
-import {Grid} from "@material-ui/core"
-import {Typography, Button} from "@mui/material"
-import {Card, CardContent} from "@material-ui/core"
+import { FormControlLabel, Radio, RadioGroup, TextField, Typography, Button } from "@mui/material";
+import { MenuItem, FormControl, Grid } from "@material-ui/core";
 import LoadingPage from "../PageTemplates/LoadingPage";
 import Shotchart from "../Shotchart/Shotchart"
 import Filters from "./Filters";
-import GradientScale from "./GradientScale"
 import FilterCheckbox from "./FilterCheckbox";
 import CheckboxSelect from "./CheckboxSelect"
 import StatCard from "../ComponentTemplates/StatCard";
@@ -34,6 +30,11 @@ export default function Analysis() {
         return filtered.length
     }
     const [FGM, setFGM] = React.useState(getFGM)
+    
+    const [chartType, setChartType] = React.useState("hex-zone")
+    const handleChartTypeChange = (event) => {
+        setChartType(event.target.value)
+    }
 
     //filters
     const [sessions, setSessions] = React.useState([]);
@@ -237,44 +238,54 @@ export default function Analysis() {
         }
     }, [player])
 
-
-
+    const generateChart = () => {
+        return <Shotchart data={shots.length ? shotsCopy : []} variant={chartType}/>
+    }
 
     return (initialStatesLoaded >= initialStatesNeeded) ? <Box sx={{p: 2}}>
-        <Grid container spacing={4} alignItems="center" justifyContent="center">
-            {teams.length ? <Grid item xs={12} sm={3} md={2}>
-                <FormControl fullWidth>
+        <Grid container spacing={2} alignItems="center" justifyContent="center">
+            {teams.length ? <Grid item xs={12} sm={6} md={4}>
+            <Box alignItems="center" display="flex" justifyContent="center" height="75px" sx={{background:"#FFF", borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4}}>  
+                <FormControl m="auto" fullWidth>
                     <TextField select label="Team" value={team} defaultValue={defaultTeam} onChange={(e) => {setTeam(e.target.value)}}>
                         {teams.map((team) => (<MenuItem key={team.teamname} value={team.teamid}>{team.teamname}</MenuItem>))}
                     </TextField>
                 </FormControl>
+                </Box> 
                 </Grid> : null }
-            {players.length ? (<Grid item xs={12} sm={4} md={3}>            
-                <FormControl fullWidth>
-                    <TextField select label="Player" value={player} onChange={(e) => {setPlayer(e.target.value)}}>
-                        <MenuItem key={"None"} value={undefined}>
-                            {"None"}
-                        </MenuItem>
-                        {players.map((player) => (
-                            <MenuItem key={player.personname} value={player.personid}>
-                            {player.personname}
+            {players.length ? (<Grid item xs={12} sm={6} md={4}>
+                <Box alignItems="center" display="flex" justifyContent="center" height="75px" sx={{background:"#FFF", borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4}}>     
+                    <FormControl m="auto" fullWidth>
+                        <TextField select label="Player" value={player} onChange={(e) => {setPlayer(e.target.value)}}>
+                            <MenuItem key={"None"} value={undefined}>
+                                {"None"}
                             </MenuItem>
-                        ))}
-                    </TextField>
-                </FormControl>
+                            {players.map((player) => (
+                                <MenuItem key={player.personname} value={player.personid}>
+                                {player.personname}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </FormControl>
+                </Box>
             </Grid>) : null}
-            <Grid item sm={5} md={7} />
+            <Grid item xs={12} sm={12} md={4}>
+                <Box display="flex" alignItems="center" justifyContent="center" height="75px" textAlign="center" sx={{background:"#FFF", borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4}}>
+                    <RadioGroup m="auto" row aria-label="contested?" defaultValue={"hex-zone"} name="" onChange={handleChartTypeChange}>
+                        <FormControlLabel value={"hex-zone"} control={<Radio color="primary" />} label="Hex Zones" />
+                        <FormControlLabel value={"hex-density"} control={<Radio color="primary" />} label="Hex Density" />
+                        <FormControlLabel value={"zone-map"} control={<Radio color="primary" />} label="Zones" />
+                    </RadioGroup>
+                </Box>
+            </Grid>
 
             <Grid item xs={12}>
-            <Grid container alignItems="flex-start" justifyContent="space-evenly" spacing={4}>
+            <Grid container alignItems="flex-start" justifyContent="space-evenly" spacing={2}>
                 <Grid item md={7} sm={12}>
-                    <Shotchart data={shots.length ? shotsCopy : []} variant="hex"/>
-                    <GradientScale />
+                    <Box alignItems="center" sx={{background:"#FFF", borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4}}>{generateChart()}</Box>
                 </Grid>
               <Grid item md={5} sm={12}>
-                <Card variant="outlined">
-                  <CardContent>
-                    <Box sx={{p: 2}}>
+                    <Box sx={{background:"#FFF", borderRadius: 2.5, p: 4, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", color: "#494949"}}>
                         <Grid container spacing={2} justifyContent="center" alignItems="center">
                             <Grid item xs={12}>
                                 <Typography variant="h2">OPTIONS</Typography>
@@ -296,7 +307,7 @@ export default function Analysis() {
                             </Grid>
                             <Grid item xs={4}>
                                 <Button variant="contained" onClick={() => {
-                                    JSON.stringify(selectedSessions) == JSON.stringify(sessionsList) ? setSelectedSessions([]) : setSelectedSessions(sessionsList);
+                                    JSON.stringify(selectedSessions) === JSON.stringify(sessionsList) ? setSelectedSessions([]) : setSelectedSessions(sessionsList);
                                 }}>Toggle Select</Button>
                             </Grid>
                             <Grid item xs={12}>
@@ -304,8 +315,6 @@ export default function Analysis() {
                             </Grid>
                         </Grid>
                     </Box>
-                  </CardContent>
-                </Card>
               </Grid>
             </Grid>
             </Grid>

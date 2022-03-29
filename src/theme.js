@@ -1,4 +1,3 @@
-import { FormControlLabel } from "@material-ui/core";
 import { createTheme } from "@mui/material/styles";
 
 // color pallete: https://coolors.co/f94144-f3722c-f8961e-f9c74f-90be6d-43aa8b-577590
@@ -7,19 +6,23 @@ import { createTheme } from "@mui/material/styles";
 export const theme = createTheme({
     palette: {
         primary: {
-            main: '#ac1a2f'
+            main: '#AC1A2F',
         },
         secondary: {
-            main: '#ffffff',
-            dark: '#494949'
+            main: '#F5F5F5',
+            dark: '#F5F5F5'
         },
     },
     typography: {
         fontFamily: "Roboto Condensed",
+        p: {
+          fontSize: 18,
+          fontFamily: "Roboto Condensed",
+          color: "#494949"
+        },
         h1: {
-          fontSize: 36,
+          fontSize: 28,
           fontWeight: 700,
-          fontStyle: 'italic'
         },
         h2: {
           fontSize: 28,
@@ -30,6 +33,10 @@ export const theme = createTheme({
           fontSize: 28,  
           fontWeight: 500,
         },
+        button: {
+          fontWeight: 700,
+          fontSize: 18
+        },
         h4: {
           fontSize: 24,
           fontWeight: 500,
@@ -39,9 +46,6 @@ export const theme = createTheme({
           fontSize: 24,
           fontWeight: 700,
           color: "white"
-        },
-        button: {
-          fontStyle: 'italic',
         },
       },
 

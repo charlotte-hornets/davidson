@@ -10,12 +10,14 @@ import Undo from "./Undo.js";
 import LoadingPage from "../PageTemplates/LoadingPage.js";
 import Sidebar from "../ComponentTemplates/Sidebar";
 import LatestShot from "./LatestShot.js";
-import { Card, CardContent, Grid, Box, Tooltip } from "@material-ui/core";
+import { Grid, Box, Tooltip } from "@material-ui/core";
 import { Typography } from "@material-ui/core";
-import StatCard from "../ComponentTemplates/StatCard.js";
+import StatCard from "../ComponentTemplates/StatCard.tsx";
+import GradientScale from "../Analysis/GradientScale.js";
 
 
 export default class Shotchart extends Component {
+
   constructor(props) {
     super(props);
     var leagueid = 'coll';
@@ -113,6 +115,7 @@ export default class Shotchart extends Component {
     }
     }
   }
+
 
   createSectionedZones(o, base) {
     var self = this;
@@ -287,7 +290,6 @@ export default class Shotchart extends Component {
                       lst_zones: [rc3, lc3, r3, l3, m3, rbmr, lbmr,
                                   rwmr, lwmr, mmr, lf, rf, mf]}
 
-    var self = this;
     base.selectAll("polygon")
         .data(zonePoints.lst_zones)
       .enter().append('polygon')
@@ -337,13 +339,13 @@ export default class Shotchart extends Component {
       var center = this.findCentroid(zonePoints.labeledzones[key])
       var prettyFormat;
 
-      if (key == 'rim') {
+      if (key === 'rim') {
         prettyFormat = {top: -1.5, bottom: 3, left: 0, right: 0};
-      } else if (key == 'mf') {
+      } else if (key === 'mf') {
         prettyFormat = {top: 0, bottom: 3, left: 0, right: 0};
-      } else if (key == 'lf' && o.league == 'nba') {
+      } else if (key === 'lf' && o.league === 'nba') {
         prettyFormat = {top: 0, bottom: 2, left: 0, right: 2}
-      } else if (key == 'rf' && o.league == 'nba') {
+      } else if (key === 'rf' && o.league === 'nba') {
         prettyFormat = {top: 0, bottom: 2, left: -2, right: 0};
       } else {
         prettyFormat = {top: 0, bottom: 2, left: 0, right: 0};
@@ -381,13 +383,14 @@ export default class Shotchart extends Component {
   }
 
   getPrettyPercentage(fgm, fga) {
-    if (fga == 0) return '0%';
+    if (fga === 0) return '0%';
     return (((fgm / fga) * 10000) / 100).toFixed(1) + '%';
   }
 
   findShotZoneData(shotzone){
-    return this.props.visibleShotData.filter(function(i) {
-      return i.bucket == shotzone;
+    return this.props.data.filter(function(i) {
+      console.log(shotzone)
+      return "RIM" === shotzone;
     });
   }
 
@@ -448,7 +451,7 @@ export default class Shotchart extends Component {
       .attr('viewBox', "0 0 " + width + " " + height)
 
     background.append("rect")
-      .attr("fill", this.state.variant === undefined ? "transparent" : "white")
+      .attr("fill", this.props.variant === undefined ? "transparent" : "white")
       .attr("width", width)
       .attr("height", height);
 
@@ -478,6 +481,7 @@ export default class Shotchart extends Component {
       .attr("y2", o.visibleCourtLength);
 
 
+
     // create angle for three point arc (tangent - in rads)
     var tpAngle = Math.atan(o.threePointSideRadius /
       (o.threePointCutoffLength - o.basketProtrusionLength - o.basketDiameter/2));
@@ -489,7 +493,6 @@ export default class Shotchart extends Component {
         .attr("transform", "translate(" + (o.courtWidth / 2) + ", " +
           (o.visibleCourtLength - o.basketProtrusionLength - o.basketDiameter / 2) +
           ")");
-
 
 
     // create three point line standout
@@ -569,7 +572,14 @@ export default class Shotchart extends Component {
       .attr("cy", o.visibleCourtLength - o.basketProtrusionLength - o.basketDiameter / 2)
       .attr("r", o.basketDiameter / 2)
 
-    if (this.state.variant === "hex") {
+    if (this.props.variant === "zone-map" && this.props.data.length) {
+      this.appendArcPath(base, o.floaterRange, -1 * Math.PI, Math.PI, (o.courtWidth / 2),
+        (o.visibleCourtLength - o.basketProtrusionLength - o.basketDiameter / 2), 'floaterXY')
+          .attr('class', 'shotzone floater')
+          .attr("transform", "translate(" + (o.courtWidth / 2) + ", " +
+            (o.visibleCourtLength - o.basketProtrusionLength - o.basketDiameter / 2) + ")");
+          this.createSectionedZones(o, base);
+    } else if (this.props.variant === "hex-zone" || this.props.variant === "hex-density") {
       var chart = d3.select(node)
         .attr('width', o.width)
         .attr('viewBox', "0 0 " + 50 + " " + 36.573)
@@ -593,7 +603,7 @@ export default class Shotchart extends Component {
 
 
           // Prepare a color palette
-      var color = d3.scaleSequential(d3.interpolateLab("#023047", "#fb8500"))
+      var color = d3.scaleSequential(d3.interpolateLab("#193a6f", "#f98125"))
           .domain([0, 1]);
 
         // Compute the hexbin data
@@ -601,32 +611,61 @@ export default class Shotchart extends Component {
         .radius(2.225) // size of the bin in px
         .extent([ [0, 0], [width, height] ])
 
-      // Plot the hexbins
-      chart.append("clipPath")
-          .attr("id", "clip")
-        .append("rect")
-          .attr("width", width)
-          .attr("height", height)
 
-      chart.append("g")
-          .attr("clip-path", "url(#clip)")
-        .selectAll("path")
-        .data( hexbin(inputForHexbinFun) )
-        .enter().append("path")
-          .attr("d", hexbin.hexagon())
-          .attr("opacity", "85%")
-          .attr("transform", function(d) { 
-            return "translate(" + d.x + "," + d.y + ")"; 
-          })
-          .attr("fill", function(d) {
-            const group = d.slice(0)
-            let sum = 0
-            group.forEach((item) => {
-              sum = sum + item[2]
+      if (this.props.variant === "hex-density") {
+        console.log(hexbin(inputForHexbinFun))
+        if (hexbin(inputForHexbinFun).length > 0) {
+          var longest = hexbin(inputForHexbinFun).sort((a, b) => {
+            return b.length - a.length;
+          })[0]
+          color = d3.scaleSequential(d3.interpolateLab("#193a6f", "#f98125"))
+            .domain([1, longest.length]);
+              // Plot the hexbins
+
+          chart.append("clipPath")
+            .attr("id", "clip")
+          .append("rect")
+            .attr("width", width)
+            .attr("height", height)
+
+          chart.append("g")
+              .attr("clip-path", "url(#clip)")
+            .selectAll("path")
+            .data( hexbin(inputForHexbinFun) )
+            .enter().append("path")
+              .attr("d", hexbin.hexagon())
+              .attr("opacity", "85%")
+              .attr("transform", function(d) { 
+                return "translate(" + d.x + "," + d.y + ")"; 
+              })
+              .attr("fill", function(d) {
+                return color(d.length); })
+      }} else {
+        // Plot the hexbins
+        chart.append("clipPath")
+            .attr("id", "clip")
+          .append("rect")
+            .attr("width", width)
+            .attr("height", height)
+
+        chart.append("g")
+            .attr("clip-path", "url(#clip)")
+          .selectAll("path")
+          .data( hexbin(inputForHexbinFun) )
+          .enter().append("path")
+            .attr("d", hexbin.hexagon())
+            .attr("opacity", "85%")
+            .attr("transform", function(d) { 
+              return "translate(" + d.x + "," + d.y + ")"; 
             })
-            return color(sum / group.length); })
-    } else if (this.props.variant === "map") {
-      this.createSectionedZones(o, base);
+            .attr("fill", function(d) {
+              const group = d.slice(0)
+              let sum = 0
+              group.forEach((item) => {
+                sum = sum + item[2]
+              })
+              return color(sum / group.length); })
+        }
     }
 
   }
@@ -643,7 +682,7 @@ export default class Shotchart extends Component {
     const urlParams = new URLSearchParams(queryString);
 
 
-    if (this.state.variant === undefined) {
+    if (this.props.variant === undefined) {
       if(urlParams.get('team2') !== "" && urlParams.get('team2') !== "null") {
         this.setState({statesNeeded: this.state.statesNeeded+1})
       }
@@ -873,7 +912,7 @@ export default class Shotchart extends Component {
 
 
   render() {
-    if (this.state.variant === undefined) {
+    if (this.props.variant === undefined) {
     // creating circles and tooltip depending on shot view type
     let circles = this.state.multipleShotView ? this.state.shotList.map((shot, index) => 
       <Tooltip title={<React.Fragment>
@@ -894,18 +933,18 @@ export default class Shotchart extends Component {
     if (this.state.statesNeeded=== this.state.statesLoaded) {
       return <Box>
           <Box sx={{p: 2}}>
-          <Grid container spacing={2} justifyContent="space-evenly" alignItems="center">
+          <Grid container spacing={2} justifyContent="space-evenly">
             <Grid item md={7} sm={12}>
+            <Box sx={{p:5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", background: "#FFF", borderRadius: 2.5}}>
               <svg id="court-diagram" style={{width: "100%"}} ref={node => this.node = node} onClick={this.clicked}>{this.state.circle_show ? circles: null}</svg>
               {this.state['popupShow'] ? <Popup header={"SHOT DATA ENTRY"} closePopup={this.closeEntry} content={<DataEntry players={this.state.players} round={this.state.current_round} x_coord={this.state['current_x']} y_coord={this.state['current_y']} submitData={this.submitShotList} showCircle={this.updateCircleShow} closePopup={this.closeEntry} showClose={true}/>} showClose={true}/> : null}
+            </Box>
             </Grid>
-            <Grid item />
-            <Grid item md={4} sm={12} >
+            <Grid item md={5} sm={12} >
             
-            <Grid container spacing={4}>
+            <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Card variant="outlined">
-                  <CardContent>
+              <Box sx={{p:2, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", background: "#FFF", borderRadius: 2.5}}>
                     <Grid container spacing={2} justifyContent="space-around" alignItems="center">
                       <Grid item xs={12}><Typography variant="h2">OPTIONS</Typography></Grid>
                       <Grid item xs={5} style={{textAlign: "center"}}>
@@ -916,15 +955,15 @@ export default class Shotchart extends Component {
                           <Undo undoFunction={this.undoShotList}/>
                       </Grid>
                     </Grid>
-                  </CardContent>
-                </Card>
+                  </Box>
               </Grid>
               <Grid item xs={12}>
+              <Box sx={{p:2, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", background: "#FFF", borderRadius: 2.5}}>
                 <Sidebar header={"LATEST SHOT"} content={<LatestShot data={this.state.latest_shot}/>}/>
+              </Box>
               </Grid>
               <Grid item xs={12}>
-                <Card variant="outlined">
-                  <CardContent>
+              <Box sx={{p:2, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", background: "#FFF", borderRadius: 2.5}}>
                     <Grid container spacing={1} justifyContent="space-evenly" alignItems="center">
                       <Grid item xs={12}><Typography variant="h2">SESSION STATS</Typography></Grid>
                       <Grid item xs={4}>
@@ -937,8 +976,7 @@ export default class Shotchart extends Component {
                         <StatCard name="FG%" content={(100* this.state.sessionFGM / this.state.sessionFGA).toFixed(0) + "%"}/>
                       </Grid>
                     </Grid>
-                  </CardContent>
-                </Card>
+                  </Box>
               </Grid>
 
               </Grid>
@@ -951,11 +989,16 @@ export default class Shotchart extends Component {
         <LoadingPage loaded={this.state.statesLoaded} needed={this.state.statesNeeded} />
       </div>
     }
-  } else if (this.state.variant === "hex") {
+  } else if (this.props.variant === "hex-zone" || this.props.variant === "hex-density") {
     return <div style={{width: "100%"}}>
         <svg id="court-analysis-diagram"  style={{width: "100%"}} ref={node => this.node = node} ></svg>
+        <GradientScale content={this.props.variant === "hex-zone" ? ["0%", "100%", "FG%"] : ["Fewer", "More", "FGA"]}/>
       </div>
-  } else {
+  } else if (this.props.variant === "zone-map") {
+    return <svg id="court-analysis-diagram"  style={{width: "100%"}} ref={node => this.node = node} ></svg>
+  }
+  
+  else {
     return <Box>
       shot chart type not defined
     </Box>
