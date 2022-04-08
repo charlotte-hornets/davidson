@@ -15,7 +15,7 @@ export default function TeamSelection(props) {
       </FormControl>
     ) : (
       <FormControl fullWidth>
-      <TextField select defaultValue={props.default} label="Select" fullWidth onChange={(event) => {
+      <TextField select defaultValue={props.default} label={props.label} fullWidth onChange={(event) => {
         props.changeTeam(event.target.value);
       }}>
         <MenuItem key={""} value={""}>

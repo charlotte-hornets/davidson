@@ -9,7 +9,6 @@ interface Props  {
 }
 
 const FilterCheckbox = (props : Props) => {
-  console.log(props)
   return (
     <FormControlLabel
       value={props.value}

@@ -19,8 +19,8 @@ export default class Shotchart extends Component {
   constructor(props) {
     super(props);
     var leagueid = "coll";
-    console.log(this.props.variant);
     this.state = {
+      theme: this.props.theme,
       variant: this.props.variant,
       // loading and loading check variables
       statesLoaded: 0,
@@ -637,7 +637,7 @@ export default class Shotchart extends Component {
 
     background
       .append("rect")
-      .attr("fill", "transparent")
+      .attr("fill", this.state.variant === undefined ? "transparent" : this.state.theme === undefined ? "white" : this.state.theme.palette.secondary.main)
       .attr("width", width)
       .attr("height", height);
 
@@ -884,7 +884,6 @@ export default class Shotchart extends Component {
         ]);
 
       if (this.props.variant === "hex-density") {
-        console.log(hexbin(inputForHexbinFun));
         if (hexbin(inputForHexbinFun).length > 0) {
           var longest = hexbin(inputForHexbinFun).sort((a, b) => {
             return b.length - a.length;
@@ -1059,7 +1058,6 @@ export default class Shotchart extends Component {
   };
 
   updateStats = () => {
-    console.log("called");
     const shotsTaken = this.state.shotList.length;
     if (shotsTaken === 0) {
     } else {
@@ -1071,7 +1069,6 @@ export default class Shotchart extends Component {
         sessionFGA: this.state.shotList.length,
         sessionFGM: sum,
       });
-      console.log(this.state.sessionFGA, this.state.sessionFGM);
     }
   };
 
@@ -1206,7 +1203,6 @@ export default class Shotchart extends Component {
       this.state.shotList.forEach((item) => {
         sum = sum + item.make;
       });
-      console.log(sum / shotsTaken);
     }
   };
 
@@ -1285,7 +1281,7 @@ export default class Shotchart extends Component {
                     sx={{
                       p: 5,
                       boxShadow:
-                        "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px",
+                        10,
                       background: this.props.theme.palette.secondary.main,
                       borderRadius: 2.5,
                     }}
@@ -1326,7 +1322,7 @@ export default class Shotchart extends Component {
                         sx={{
                           p: 2,
                           boxShadow:
-                            "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px",
+                           10,
                           background: this.props.theme.palette.secondary.main,
                           borderRadius: 2.5,
                         }}
@@ -1366,7 +1362,7 @@ export default class Shotchart extends Component {
                         sx={{
                           p: 2,
                           boxShadow:
-                            "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px",
+                            10,
                           background: this.props.theme.palette.secondary,
                           borderRadius: 2.5,
 
@@ -1384,7 +1380,7 @@ export default class Shotchart extends Component {
                         sx={{
                           p: 2,
                           boxShadow:
-                            "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px",
+                            10,
                           background: this.props.theme.palette.secondary.main,
                           borderRadius: 2.5,
                         }}

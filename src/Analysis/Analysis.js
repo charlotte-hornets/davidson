@@ -1,9 +1,9 @@
 import React from "react";
 import { useEffect } from "react";
 import Helpers from "../Utils/Helpers";
-import { Box } from "@material-ui/system"
-import { FormControlLabel, Radio, RadioGroup, TextField, Typography, Button, Backdrop } from "@mui/material";
-import { MenuItem, FormControl, Grid } from "@material-ui/core";
+import { Box } from "@mui/material"
+import { FormControlLabel, Radio, RadioGroup, TextField, Typography, Button } from "@mui/material";
+import { MenuItem, FormControl, Grid } from "@mui/material";
 import LoadingPage from "../PageTemplates/LoadingPage.tsx";
 import Shotchart from "../Shotchart/Shotchart"
 import Filters from "./Filters";
@@ -18,7 +18,6 @@ let initialStatesNeeded = 4;
 
 
 export default function Analysis(props) {
-    console.log(props.theme)
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const defaultTeam = parseInt(urlParams.get('defaultTeam'))
@@ -245,11 +244,11 @@ export default function Analysis(props) {
     }
 
     return (initialStatesLoaded >= initialStatesNeeded) ? <Box>
-        <Box sx={{ p: 2, backgroundColor: props.theme.palette.secondary.main }}>
+        <Box sx={{ p: 2 }}>
 
             <Grid container spacing={2} alignItems="center" justifyContent="center">
                 {teams.length ? <Grid item xs={12} sm={6} md={4}>
-                    <Box alignItems="center" display="flex" justifyContent="center" height="75px" sx={{ backgroundColor: props.theme.palette.secondary.main, borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4 }}>
+                    <Box alignItems="center" display="flex" justifyContent="center" height="75px" sx={{ borderRadius: 2.5, boxShadow: 10, p: 4 }}>
                         <FormControl m="auto" fullWidth>
                             <TextField select label="Team" value={team} defaultValue={defaultTeam} onChange={(e) => { setTeam(e.target.value) }}>
                                 {teams.map((team) => (<MenuItem key={team.teamname} value={team.teamid}>{team.teamname}</MenuItem>))}
@@ -258,7 +257,7 @@ export default function Analysis(props) {
                     </Box>
                 </Grid> : null}
                 {players.length ? (<Grid item xs={12} sm={6} md={4}>
-                    <Box alignItems="center" display="flex" justifyContent="center" height="75px" sx={{ backgroundColor: props.theme.palette.secondary.main, borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4 }}>
+                    <Box alignItems="center" display="flex" justifyContent="center" height="75px" sx={{ borderRadius: 2.5, boxShadow: 10, p: 4 }}>
                         <FormControl m="auto" fullWidth>
                             <TextField select label="Player" value={player} onChange={(e) => { setPlayer(e.target.value) }}>
                                 <MenuItem key={"None"} value={undefined}>
@@ -274,7 +273,7 @@ export default function Analysis(props) {
                     </Box>
                 </Grid>) : null}
                 <Grid item xs={12} sm={12} md={4}>
-                    <Box display="flex" alignItems="center" justifyContent="center" height="75px" textAlign="center" sx={{ backgroundColor: props.theme.palette.secondary.main, borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4 }}>
+                    <Box display="flex" alignItems="center" justifyContent="center" height="75px" textAlign="center" sx={{ borderRadius: 2.5, boxShadow: 10, p: 4 }}>
                         <RadioGroup m="auto" row aria-label="contested?" defaultValue={"hex-zone"} name="" onChange={handleChartTypeChange}>
                             <FormControlLabel value={"hex-zone"} control={<Radio color="primary" />} label="Hex Zones" sx={{color: props.theme.palette.text.primary}}/>
                             <FormControlLabel value={"hex-density"} control={<Radio color="primary" />} label="Hex Density" sx={{color: props.theme.palette.text.primary}}/>
@@ -286,10 +285,10 @@ export default function Analysis(props) {
                 <Grid item xs={12}>
                     <Grid container alignItems="flex-start" justifyContent="space-evenly" spacing={2}>
                         <Grid item md={7} sm={12}>
-                            <Box alignItems="center" sx={{ backgroundColor: props.theme.palette.secondary.main, borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4 }}>{generateChart()}</Box>
+                            <Box alignItems="center" sx={{  borderRadius: 2.5, boxShadow: 10, p: 4 }}>{generateChart()}</Box>
                         </Grid>
                         <Grid item md={5} sm={12}>
-                            <Box sx={{ backgroundColor: props.theme.palette.secondary.main, borderRadius: 2.5, p: 4, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", color: "#494949" }}>
+                            <Box sx={{ borderRadius: 2.5, p: 4, boxShadow: 10, color: "#494949" }}>
                                 <Grid container spacing={2} justifyContent="center" alignItems="center">
                                     <Grid item xs={12}>
                                         <Typography color="text.primary" variant="h2">OPTIONS</Typography>

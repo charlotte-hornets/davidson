@@ -10,7 +10,6 @@ export default function DataEntry(props) {
     let options = props.players.map(player => {
       return({label: (player['personname'] + " #" + player['rosterjerseynumber'] + " (" + player['college'] + ")"), value: player});
     });
-    console.log(options)
     
 
     let values = {}
@@ -21,7 +20,6 @@ export default function DataEntry(props) {
     const handleSelectChange = (event) =>{
       setSelected(event.target.value)
     }
-    console.log(selected);
 
     const [wasMade, setWasMade] = React.useState("1");
     const handleWasMadeChange = (event) => {
@@ -121,8 +119,6 @@ export default function DataEntry(props) {
                         y_coord: props.y_coord,
                         round: round
                     }
-                    console.log(values.teamseasonid)
-                    console.log(values)
                     props.submitData(values);
                     props.showCircle();
                     props.closePopup();

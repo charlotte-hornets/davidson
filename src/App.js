@@ -5,9 +5,9 @@ import {
   Routes,
   Route
 } from "react-router-dom";
-import Index from './Index/Index.js';
+import Index from './Index/Index.tsx';
 import Shotchart from './Shotchart/Shotchart.js';
-import { ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import Analysis from "./Analysis/Analysis.js";
 import Navbar from "./ComponentTemplates/Navbar"
 import { theme } from "./theme.tsx";
@@ -21,15 +21,12 @@ export default function App() {
 
   const flipMode = (e) => {
     mode === "light" ? setMode("dark") : setMode("light")
-    console.log("mode flipped")
   }
 
   useEffect(() => {
     try {
       setMode(window.localStorage.getItem('mode'));
-      console.log(JSON.parse(window.localStorage.getItem('mode')))
     } catch {
-      console.log("nt")
     }
   }, []);
 
@@ -39,6 +36,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={currTheme}>
+      <CssBaseline/>
       <Router>
         <div>
           {/* A <Switch> looks through its children <Route>s and

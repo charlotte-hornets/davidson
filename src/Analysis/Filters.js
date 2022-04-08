@@ -9,7 +9,7 @@ export default function Filters(props) {
     return <Box>
         <Grid container spacing={1} >
             <Grid item xs={6}>
-                <Typography variant="p" style={{ fontWeight: 700 }}>SHOT TYPES</Typography>
+                <Typography color="text.primary" style={{ fontWeight: 700 }}>SHOT TYPES</Typography>
                 <FormGroup>
                     <FilterCheckbox theme={props.theme} value="Layup/Dunk" change={props.shotType} label="Layup/Dunk" />
                     <FilterCheckbox theme={props.theme} value="Dribble Jumper" change={props.shotType} label="Dribble Jumper" />
@@ -19,7 +19,7 @@ export default function Filters(props) {
                 </FormGroup>
             </Grid>
             <Grid item xs={6}>
-                <Typography variant="p" style={{ fontWeight: 700 }}>ROUND</Typography>
+                <Typography color="text.primary" style={{ fontWeight: 700 }}>ROUND</Typography>
                 <FormGroup>
                     <FilterCheckbox theme={props.theme} value={1} change={props.round} label="1" />
                     <FilterCheckbox theme={props.theme} value={2} change={props.round} label="2" />
@@ -29,7 +29,7 @@ export default function Filters(props) {
                 </FormGroup>
             </Grid>
             <Grid item xs={6}>
-                <Typography variant="p" style={{ fontWeight: 700 }}>CONTEST</Typography>
+                <Typography color="text.primary" style={{ fontWeight: 700 }}>CONTEST</Typography>
                 <FormGroup>
                     <FilterCheckbox value="Contested" change={props.contested} label="Contested" />
                     <FilterCheckbox value="Uncontested" change={props.contested} label="Uncontested" />

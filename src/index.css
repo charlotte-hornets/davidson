@@ -5,7 +5,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f5f5;
 }
 
 code {
@@ -96,17 +95,6 @@ code {
 }
 ​.alertMessage {
   text-align: center;
-}
-​input[type="text"]:disabled {
-  background: white;
-}
-​select:disabled {
-  background: #333333;
-  opacity: 1;
-}
-​textarea:disabled {
-  background: transparent;
-  opacity: 1;
 }
 
 .shot-chart-court * {
@@ -202,7 +190,6 @@ html,
 body {
   padding: 0px;
   margin: 0px;
-  background-color: #f5f5f5;
   height: 100%;
 }
 

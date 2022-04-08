@@ -19,6 +19,7 @@ export const theme = (mode: string) => {
           primary: '#000',
           secondary: "#494949",
         },
+        background: {default: "#F5F5F5"}
       },
       zIndex: {
         appBar: 1201,
@@ -35,7 +36,7 @@ export const theme = (mode: string) => {
         },
         h3: {
           fontSize: 28,
-          fontWeight: 500,
+          fontWeight: 700,
         },
         button: {
           fontWeight: 700,
@@ -57,15 +58,12 @@ export const theme = (mode: string) => {
       // palette values for dark mode
       mode: "dark",
       primary: {main: "#AC1A2F"},
-      secondary: {main: "#494949"},
-      background: {
-        default: "#494949",
-        paper: "#494949",
-      },
+      secondary: {main: "#424242"},
       text: {
         primary: '#fff',
-        secondary: "#d9d9d9",
+        secondary: "#F5F5F5",
       },
+      background: {default: "#424242"}
     },
     zIndex: {
       appBar: 1201,
@@ -82,7 +80,7 @@ export const theme = (mode: string) => {
       },
       h3: {
         fontSize: 28,
-        fontWeight: 500,
+        fontWeight: 700,
       },
       button: {
         fontWeight: 700,

@@ -4,7 +4,6 @@ import { Grid } from "@material-ui/core";
 
 export default function LatestShot(props) {
     const data = props.data;
-    console.log(data);
     const player = data.personname;
     const made = data.make === 1 ? "Make" : "Miss";
     const contest = data.contesttype;

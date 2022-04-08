@@ -19,7 +19,8 @@ import InputIcon from '@mui/icons-material/Input';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-
+import hexcatwhite from "../logos/hexcatwhite.png";
+import hexcatblack from "../logos/hexcatblack.png";
 const drawerWidth = 240;
 
 interface ScrollProps {
@@ -91,25 +92,24 @@ export default function ResponsiveDrawer(props: Props) {
   return (
     <Box sx={{ display: 'flex' }}>
       <HideOnScroll>
-        <AppBar
-          position="fixed"
-          sx={{
-            boxShadow: 0,
-            backgroundColor: props.theme.palette.secondary.main
-          }}
-        >
+        <AppBar position="fixed" sx={{
+          boxShadow: 0,
+          background: props.theme.palette.secondary.main
+        }}>
           <Toolbar disableGutters sx={{ ml: 4 }}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: 'none' } }}
+            <IconButton color="inherit" aria-label="open drawer" edge="start"
+              onClick={handleDrawerToggle} sx={{
+                mr: 2, display: { sm: 'none' }
+              }}
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h5" color="text.primary" noWrap component="div" sx={{ "&:hover": { cursor: "pointer" } }} onClick={() => { window.location.href = "/" }}>
-              'CAT CHARTS
+            <Box sx={{mr: 1.5}}>
+            <img src={props.theme.palette.mode === 'dark' ? hexcatwhite : hexcatblack} style={{height: "35px"}}/>
+            </Box>
+            
+            <Typography variant="h3" color="text.primary" noWrap component="div" sx={{ "&:hover": { cursor: "pointer" } }} onClick={() => { window.location.href = "/" }}>
+              HEXCAT
             </Typography>
             <Box flexGrow={1} />
             <Box sx={{ display: { xs: "none", sm: "flex" } }}>
@@ -117,7 +117,7 @@ export default function ResponsiveDrawer(props: Props) {
               <NavButton text={"Analysis"} url={"/analysis?defaultTeam=281"} active={props.active === "Analysis"} theme={props.theme} />
             </Box>
             <IconButton sx={{ mr: 2 }} onClick={modeFlip}>
-              {props.theme.palette.mode === 'dark' ? <Brightness7Icon style={{fill: "white"}}/> : <Brightness4Icon style={{fill: "#494949"}}/>}
+              {props.theme.palette.mode === 'dark' ? <Brightness7Icon style={{ fill: "white" }} /> : <Brightness4Icon style={{ fill: "#494949" }} />}
             </IconButton>
             <Box sx={{ mr: 4 }}>
               <Avatar />

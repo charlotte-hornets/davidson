@@ -1,9 +1,10 @@
 
 import * as React from 'react';
 import { useEffect } from 'react';
-import { Backdrop, Grid, CircularProgress, Typography, Box } from '@mui/material';
-import Button from '@mui/material/Button';
+import { Backdrop, Typography, Box } from '@mui/material';
 import Loading from '../ComponentTemplates/Loading';
+import { Theme } from '@mui/material/styles';
+
 
 const tips = [
     ['"Everything negative - pressure, challenges - are all an opportunity for me to rise"', "Kobe Bryant"],
@@ -18,9 +19,7 @@ const tips = [
 ]
 
 type Props = {
-    needed: number,
-    loaded: number,
-    theme: any
+    theme: Theme
 }
 
 export default function LoadingPage(props: Props) {
@@ -33,12 +32,11 @@ export default function LoadingPage(props: Props) {
         setLoadingTip(tips[Math.floor(Math.random() * tips.length)])
     }, []);
 
-    console.log(props.needed, props.loaded)
     return (
         <Box>
             <Backdrop
-            open={true}
-            sx={{backgroundImage: "url(https://dbukjj6eu5tsf.cloudfront.net/sidearm.sites/davidsonwildcats.com/images/2019/1/8/BrajkovicMason.png)"}}
+                open={true}
+                sx={{ backgroundImage: "url(https://dbukjj6eu5tsf.cloudfront.net/sidearm.sites/davidsonwildcats.com/images/2019/1/8/BrajkovicMason.png)" }}
             />
             <Backdrop
                 sx={{ opacity: 100, zIndex: (theme) => theme.zIndex.drawer - 1, display: "flex", justifyContent: "center", alignItems: "center", backgroundImage: `linear-gradient(to bottom right, ${props.theme.palette.primary.main + "B3"}, #494949FF)` }}
@@ -47,7 +45,7 @@ export default function LoadingPage(props: Props) {
             >
                 <Box sx={{ textAlign: "center" }}>
                     <Box sx={{ p: 1 }}>
-                        <Loading loaded={props.loaded} needed={props.needed} />
+                        <Loading />
                     </Box>
                     <Box sx={{ p: 1 }}>
                         <Typography paragraph sx={{ color: "white" }}>{loadingTip[0]}<br />{loadingTip[1]}</Typography>
