@@ -15,13 +15,13 @@ export default function GradientScale(props) {
                 }}></Box>
             </Grid>
             <Grid item xs={1}>
-                <Typography variant="p">{props.content[0]}</Typography>
+                <Typography >{props.content[0]}</Typography>
             </Grid>
             <Grid item xs={10} style={{textAlign: "center"}}>
-                <Typography variant="p" style={{fontWeight: 700}}>{props.content[2]}</Typography>
+                <Typography style={{fontWeight: 700}}>{props.content[2]}</Typography>
             </Grid>
             <Grid item xs={1} style={{textAlign: "right"}}>
-                <Typography variant="p">{props.content[1]}</Typography>
+                <Typography >{props.content[1]}</Typography>
             </Grid>
 
         </Grid>

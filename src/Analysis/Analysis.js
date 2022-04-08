@@ -2,12 +2,12 @@ import React from "react";
 import { useEffect } from "react";
 import Helpers from "../Utils/Helpers";
 import { Box } from "@material-ui/system"
-import { FormControlLabel, Radio, RadioGroup, TextField, Typography, Button } from "@mui/material";
+import { FormControlLabel, Radio, RadioGroup, TextField, Typography, Button, Backdrop } from "@mui/material";
 import { MenuItem, FormControl, Grid } from "@material-ui/core";
-import LoadingPage from "../PageTemplates/LoadingPage";
+import LoadingPage from "../PageTemplates/LoadingPage.tsx";
 import Shotchart from "../Shotchart/Shotchart"
 import Filters from "./Filters";
-import FilterCheckbox from "./FilterCheckbox";
+import FilterCheckbox from "./FilterCheckbox.tsx";
 import CheckboxSelect from "./CheckboxSelect"
 import StatCard from "../ComponentTemplates/StatCard";
 
@@ -17,7 +17,8 @@ let initialStatesLoaded = 0;
 let initialStatesNeeded = 4;
 
 
-export default function Analysis() {
+export default function Analysis(props) {
+    console.log(props.theme)
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const defaultTeam = parseInt(urlParams.get('defaultTeam'))
@@ -26,11 +27,11 @@ export default function Analysis() {
     const [shotsCopy, setShotsCopy] = React.useState([])
     const getFGM = () => {
         let filtered = shotsCopy
-        filtered = filtered.filter((item) => {return item.make === 1})
+        filtered = filtered.filter((item) => { return item.make === 1 })
         return filtered.length
     }
     const [FGM, setFGM] = React.useState(getFGM)
-    
+
     const [chartType, setChartType] = React.useState("hex-zone")
     const handleChartTypeChange = (event) => {
         setChartType(event.target.value)
@@ -45,25 +46,25 @@ export default function Analysis() {
     }
 
 
-    const [sessionTypes, setSessionTypes] = React.useState(["game", "practice","scrimmage"]);
+    const [sessionTypes, setSessionTypes] = React.useState(["game", "practice", "scrimmage"]);
     const handleSessionTypeChange = (event) => {
-        sessionTypes.includes(event.target.value) ? setSessionTypes(sessionTypes.filter((e) => {return e !== event.target.value})) : setSessionTypes([...sessionTypes, event.target.value]);
+        sessionTypes.includes(event.target.value) ? setSessionTypes(sessionTypes.filter((e) => { return e !== event.target.value })) : setSessionTypes([...sessionTypes, event.target.value]);
     }
 
 
     const [shotType, setShotType] = React.useState(["Layup/Dunk", "Dribble Jumper", "Catch and Shoot", "Runner/Floater", "Post Move"])
     const handleShotTypeChange = (event) => {
-        shotType.includes(event.target.value) ? setShotType(shotType.filter((e) => {return e !== event.target.value})) : setShotType([...shotType, event.target.value]);
+        shotType.includes(event.target.value) ? setShotType(shotType.filter((e) => { return e !== event.target.value })) : setShotType([...shotType, event.target.value]);
     }
 
     const [rounds, setRounds] = React.useState(["1", "2", "3", "4", "5"])
     const handleRoundChange = (event) => {
-        rounds.includes(event.target.value) ? setRounds(rounds.filter((e) => {return e !== event.target.value})) : setRounds([...rounds, event.target.value]);
+        rounds.includes(event.target.value) ? setRounds(rounds.filter((e) => { return e !== event.target.value })) : setRounds([...rounds, event.target.value]);
     }
 
     const [contest, setContest] = React.useState(["Contested", "Uncontested"])
     const handleContestChange = (event) => {
-        contest.includes(event.target.value) ? setContest(contest.filter((e) => {return e !== event.target.value})) : setContest([...contest, event.target.value]);
+        contest.includes(event.target.value) ? setContest(contest.filter((e) => { return e !== event.target.value })) : setContest([...contest, event.target.value]);
     }
 
     const filterShots = () => {
@@ -85,7 +86,7 @@ export default function Analysis() {
         })
         return filtered
     }
-    
+
     useEffect(() => {
         setShotsCopy(filterShots)
     }, [shots])
@@ -120,20 +121,21 @@ export default function Analysis() {
         var seasonid = 0
         Helpers.getFetch('/team/roster?teamid=' + team + '&seasonyear=2021')
             .then(res => {
-            res.json().then(data => {
-                seasonid = data[0].teamseasonid;
-                
-            })
+                res.json().then(data => {
+                    seasonid = data[0].teamseasonid;
+
+                })
             }).catch(err => {
                 console.log(err);
-        })
+            })
         return seasonid
     })
 
     const filterSessions = () => {
         let filtered = sessions;
         filtered = filtered.filter((session) => {
-            return sessionTypes.includes(session.sessiontype)});
+            return sessionTypes.includes(session.sessiontype)
+        });
         filtered = filtered.filter((session) => {
             return (session.teamseasonid_1 === team || session.teamseasonid_2 === team)
         })
@@ -156,46 +158,46 @@ export default function Analysis() {
 
     useEffect(() => {
         setSessionsList(filterSessions);
-        setSelectedSessions(filterSessions); 
+        setSelectedSessions(filterSessions);
     }, [team])
 
     useEffect(() => {
         setShotsCopy(filterShots);
     }, [selectedSessions])
-    
+
     useEffect(() => {
         initialStatesLoaded = 0;
         Helpers.getFetch('/davidson/sessions')
-        .then(res => {
-        res.json().then(data => {
-            setSessions(data.reverse());
-            initialStatesLoaded++;
-        })
-        }).catch(err => {
-        console.log(err);
-        });
+            .then(res => {
+                res.json().then(data => {
+                    setSessions(data.reverse());
+                    initialStatesLoaded++;
+                })
+            }).catch(err => {
+                console.log(err);
+            });
 
         Helpers.getFetch('/teams?seasonyear=2021&leagueid=COLL&leaguelevel=NCAA1')
-        .then(res => {
-          res.json().then(data => {
-            setTeams(data);
-            initialStatesLoaded++;
-          })
-        }).catch(err => {
-          console.log(err);
-        });
+            .then(res => {
+                res.json().then(data => {
+                    setTeams(data);
+                    initialStatesLoaded++;
+                })
+            }).catch(err => {
+                console.log(err);
+            });
     }, [])
 
     // update team info when team changed
     useEffect(() => {
         Helpers.getFetch('/team/roster?teamid=' + team + '&seasonyear=2021')
             .then(res => {
-            res.json().then(data => {
-                setPlayers(data)
-                setTeamSeasonId(data[0].teamseasonid)
-                initialStatesLoaded++;
-                setPlayer(undefined)
-            })
+                res.json().then(data => {
+                    setPlayers(data)
+                    setTeamSeasonId(data[0].teamseasonid)
+                    initialStatesLoaded++;
+                    setPlayer(undefined)
+                })
             }).catch(err => {
                 console.log(err);
             })
@@ -205,11 +207,11 @@ export default function Analysis() {
     useEffect(() => {
         setShotsCopy(filterShots)
         Helpers.getFetch('/davidson/shots?teamseasonid=' + teamseasonid)
-        .then(res => {
-            res.json().then(data => {
-                setShots(data)
-                initialStatesLoaded++;
-            })
+            .then(res => {
+                res.json().then(data => {
+                    setShots(data)
+                    initialStatesLoaded++;
+                })
             }).catch(err => {
                 console.log(err);
             })
@@ -217,21 +219,21 @@ export default function Analysis() {
 
     // get player shots when player info changed
     useEffect(() => {
-        if ( player !== undefined) {
+        if (player !== undefined) {
             Helpers.getFetch('/davidson/shots?teamseasonid=' + teamseasonid + "&playerid=" + player)
-            .then(res => {
-                res.json().then(data => {
-                    setShots(data)
-                })
+                .then(res => {
+                    res.json().then(data => {
+                        setShots(data)
+                    })
                 }).catch(err => {
                     console.log(err);
                 })
         } else {
             Helpers.getFetch('/davidson/shots?teamseasonid=' + teamseasonid)
-            .then(res => {
-                res.json().then(data => {
-                    setShots(data)
-                })
+                .then(res => {
+                    res.json().then(data => {
+                        setShots(data)
+                    })
                 }).catch(err => {
                     console.log(err);
                 })
@@ -239,95 +241,98 @@ export default function Analysis() {
     }, [player])
 
     const generateChart = () => {
-        return <Shotchart data={shots.length ? shotsCopy : []} variant={chartType}/>
+        return <Shotchart data={shots.length ? shotsCopy : []} variant={chartType} />
     }
 
-    return (initialStatesLoaded >= initialStatesNeeded) ? <Box sx={{p: 2}}>
-        <Grid container spacing={2} alignItems="center" justifyContent="center">
-            {teams.length ? <Grid item xs={12} sm={6} md={4}>
-            <Box alignItems="center" display="flex" justifyContent="center" height="75px" sx={{background:"#FFF", borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4}}>  
-                <FormControl m="auto" fullWidth>
-                    <TextField select label="Team" value={team} defaultValue={defaultTeam} onChange={(e) => {setTeam(e.target.value)}}>
-                        {teams.map((team) => (<MenuItem key={team.teamname} value={team.teamid}>{team.teamname}</MenuItem>))}
-                    </TextField>
-                </FormControl>
-                </Box> 
-                </Grid> : null }
-            {players.length ? (<Grid item xs={12} sm={6} md={4}>
-                <Box alignItems="center" display="flex" justifyContent="center" height="75px" sx={{background:"#FFF", borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4}}>     
-                    <FormControl m="auto" fullWidth>
-                        <TextField select label="Player" value={player} onChange={(e) => {setPlayer(e.target.value)}}>
-                            <MenuItem key={"None"} value={undefined}>
-                                {"None"}
-                            </MenuItem>
-                            {players.map((player) => (
-                                <MenuItem key={player.personname} value={player.personid}>
-                                {player.personname}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </FormControl>
-                </Box>
-            </Grid>) : null}
-            <Grid item xs={12} sm={12} md={4}>
-                <Box display="flex" alignItems="center" justifyContent="center" height="75px" textAlign="center" sx={{background:"#FFF", borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4}}>
-                    <RadioGroup m="auto" row aria-label="contested?" defaultValue={"hex-zone"} name="" onChange={handleChartTypeChange}>
-                        <FormControlLabel value={"hex-zone"} control={<Radio color="primary" />} label="Hex Zones" />
-                        <FormControlLabel value={"hex-density"} control={<Radio color="primary" />} label="Hex Density" />
-                        <FormControlLabel value={"zone-map"} control={<Radio color="primary" />} label="Zones" />
-                    </RadioGroup>
-                </Box>
-            </Grid>
+    return (initialStatesLoaded >= initialStatesNeeded) ? <Box>
+        <Box sx={{ p: 2, backgroundColor: props.theme.palette.secondary.main }}>
 
-            <Grid item xs={12}>
-            <Grid container alignItems="flex-start" justifyContent="space-evenly" spacing={2}>
-                <Grid item md={7} sm={12}>
-                    <Box alignItems="center" sx={{background:"#FFF", borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4}}>{generateChart()}</Box>
-                </Grid>
-              <Grid item md={5} sm={12}>
-                    <Box sx={{background:"#FFF", borderRadius: 2.5, p: 4, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", color: "#494949"}}>
-                        <Grid container spacing={2} justifyContent="center" alignItems="center">
-                            <Grid item xs={12}>
-                                <Typography variant="h2">OPTIONS</Typography>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Typography variant="p" style={{fontWeight: 700}}>TYPE:</Typography>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <FilterCheckbox value="game" label="Game" change={handleSessionTypeChange}/>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <FilterCheckbox value="scrimmage" label="Scrimmage" change={handleSessionTypeChange}/>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <FilterCheckbox value="practice" label="Practice" change={handleSessionTypeChange}/>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <CheckboxSelect sessions={sessions} validSessions={sessionsList} selected={selectedSessions} change={handleSelectedSessionsChange}/>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Button variant="contained" onClick={() => {
-                                    JSON.stringify(selectedSessions) === JSON.stringify(sessionsList) ? setSelectedSessions([]) : setSelectedSessions(sessionsList);
-                                }}>Toggle Select</Button>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Filters shotType={handleShotTypeChange} round={handleRoundChange} contested={handleContestChange}/>
-                            </Grid>
-                        </Grid>
+            <Grid container spacing={2} alignItems="center" justifyContent="center">
+                {teams.length ? <Grid item xs={12} sm={6} md={4}>
+                    <Box alignItems="center" display="flex" justifyContent="center" height="75px" sx={{ backgroundColor: props.theme.palette.secondary.main, borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4 }}>
+                        <FormControl m="auto" fullWidth>
+                            <TextField select label="Team" value={team} defaultValue={defaultTeam} onChange={(e) => { setTeam(e.target.value) }}>
+                                {teams.map((team) => (<MenuItem key={team.teamname} value={team.teamid}>{team.teamname}</MenuItem>))}
+                            </TextField>
+                        </FormControl>
                     </Box>
-              </Grid>
-            </Grid>
-            </Grid>
-            <Grid item xs={4}>
-                <StatCard name="FGA" content={shotsCopy.length}/>
-            </Grid>
-            <Grid item xs={4}>
-                <StatCard name="FGM" content={FGM}/>
-            </Grid>
-            <Grid item xs={4}>
-                <StatCard name="FG%" content={(100 * FGM / shotsCopy.length).toFixed(0) + "%"}/>
-            </Grid>
+                </Grid> : null}
+                {players.length ? (<Grid item xs={12} sm={6} md={4}>
+                    <Box alignItems="center" display="flex" justifyContent="center" height="75px" sx={{ backgroundColor: props.theme.palette.secondary.main, borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4 }}>
+                        <FormControl m="auto" fullWidth>
+                            <TextField select label="Player" value={player} onChange={(e) => { setPlayer(e.target.value) }}>
+                                <MenuItem key={"None"} value={undefined}>
+                                    {"None"}
+                                </MenuItem>
+                                {players.map((player) => (
+                                    <MenuItem key={player.personname} value={player.personid}>
+                                        {player.personname}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </FormControl>
+                    </Box>
+                </Grid>) : null}
+                <Grid item xs={12} sm={12} md={4}>
+                    <Box display="flex" alignItems="center" justifyContent="center" height="75px" textAlign="center" sx={{ backgroundColor: props.theme.palette.secondary.main, borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4 }}>
+                        <RadioGroup m="auto" row aria-label="contested?" defaultValue={"hex-zone"} name="" onChange={handleChartTypeChange}>
+                            <FormControlLabel value={"hex-zone"} control={<Radio color="primary" />} label="Hex Zones" sx={{color: props.theme.palette.text.primary}}/>
+                            <FormControlLabel value={"hex-density"} control={<Radio color="primary" />} label="Hex Density" sx={{color: props.theme.palette.text.primary}}/>
+                            <FormControlLabel value={"zone-map"} control={<Radio color="primary" />} label="Zones" sx={{color: props.theme.palette.text.primary}}/>
+                        </RadioGroup>
+                    </Box>
+                </Grid>
 
-        </Grid>
-    </Box> : <LoadingPage loaded={initialStatesLoaded} needed={initialStatesNeeded}/>;
+                <Grid item xs={12}>
+                    <Grid container alignItems="flex-start" justifyContent="space-evenly" spacing={2}>
+                        <Grid item md={7} sm={12}>
+                            <Box alignItems="center" sx={{ backgroundColor: props.theme.palette.secondary.main, borderRadius: 2.5, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", p: 4 }}>{generateChart()}</Box>
+                        </Grid>
+                        <Grid item md={5} sm={12}>
+                            <Box sx={{ backgroundColor: props.theme.palette.secondary.main, borderRadius: 2.5, p: 4, boxShadow: "rgb(0 0 0 / 20%) 0px 2px 1px -1px, rgb(0 0 0 / 14%) 0px 1px 1px 0px, rgb(0 0 0 / 12%) 0px 1px 3px 0px", color: "#494949" }}>
+                                <Grid container spacing={2} justifyContent="center" alignItems="center">
+                                    <Grid item xs={12}>
+                                        <Typography color="text.primary" variant="h2">OPTIONS</Typography>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Typography color="text.primary" style={{ fontWeight: 700 }}>TYPE:</Typography>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FilterCheckbox value="game" label="Game" theme={props.theme} change={handleSessionTypeChange} />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FilterCheckbox value="scrimmage" label="Scrimmage" theme={props.theme} change={handleSessionTypeChange} />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FilterCheckbox value="practice" label="Practice" theme={props.theme} change={handleSessionTypeChange} />
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <CheckboxSelect sessions={sessions} validSessions={sessionsList} selected={selectedSessions} change={handleSelectedSessionsChange} />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <Button variant="contained" onClick={() => {
+                                            JSON.stringify(selectedSessions) === JSON.stringify(sessionsList) ? setSelectedSessions([]) : setSelectedSessions(sessionsList);
+                                        }}>Select All</Button>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Filters shotType={handleShotTypeChange} round={handleRoundChange} contested={handleContestChange} theme={props.theme} />
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={4}>
+                    <StatCard name="FGA" content={shotsCopy.length} theme={props.theme}/>
+                </Grid>
+                <Grid item xs={4}>
+                    <StatCard name="FGM" content={FGM} theme={props.theme}/>
+                </Grid>
+                <Grid item xs={4}>
+                    <StatCard name="FG%" content={(100 * FGM / shotsCopy.length).toFixed(0) + "%"} theme={props.theme}/>
+                </Grid>
+
+            </Grid>
+        </Box>
+    </Box> : <LoadingPage loaded={initialStatesLoaded} needed={initialStatesNeeded} theme={props.theme} />;
 }

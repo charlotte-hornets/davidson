@@ -1,13 +1,6 @@
 import React from "react";
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControl from "@material-ui/core/FormControl";
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { Grid, Typography } from "@material-ui/core";
-import { InputLabel } from "@material-ui/core";
+import { Select, MenuItem, Button, Radio, RadioGroup, FormControl, FormControlLabel, Grid, Typography, InputLabel, }  from '@mui/material';
+
 import Popup from "./Popup";
 import { useState } from "react";
 

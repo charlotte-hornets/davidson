@@ -1,7 +1,6 @@
 import React from "react";
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
-import { FormControl } from "@material-ui/core";
+import { TextField, MenuItem} from '@mui/material';
+import { FormControl } from "@mui/material";
 
 export default function TeamSelection(props) {
   return props.required ? (

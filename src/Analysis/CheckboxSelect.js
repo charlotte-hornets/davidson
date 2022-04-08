@@ -1,41 +1,44 @@
-import * as React from 'react';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import ListItemText from '@mui/material/ListItemText';
-import Select from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import ListItemText from "@mui/material/ListItemText";
+import Select from "@mui/material/Select";
+import Checkbox from "@mui/material/Checkbox";
 
 
-export default function CheckboxSelect(props) {
-    const sessions = props.sessions;
-    const selected = props.selected
-    const valid = props.validSessions
-    return valid.length ? (
+const CheckboxSelect = (props) => {
+  const sessions = props.sessions;
+  const selected = props.selected;
+  const valid = props.validSessions;
+  return valid.length ? (
     <div>
-        <FormControl fullWidth>
+      <FormControl fullWidth>
         <InputLabel id="sessions-select-label">Sessions</InputLabel>
         <Select
-            
-            labelId="sessions-select"
-            id="sessions-select"
-            multiple
-            value={selected}
-            renderValue={(selected) => selected.length + " selected"}
-            input={<OutlinedInput label="Sessions" />}
-            onChange={props.change}
+          labelId="sessions-select"
+          id="sessions-select"
+          multiple
+          value={selected}
+          renderValue={(selected) => selected.length + " selected"}
+          input={<OutlinedInput label="Sessions" />}
+          onChange={props.change}
         >
-            {valid.map((session) => {
-                session = sessions.find((element) => {
-                    return element.sessionid === session});
-                return <MenuItem key={session.name} value={session.sessionid}>
-                    <Checkbox checked={selected.includes(session.sessionid)} />
-                    <ListItemText primary={session.name} />
-                </MenuItem>
-            })}
+          {valid.map((session) => {
+            session = sessions.find((element) => {
+              return element.sessionid === session;
+            });
+            return (
+              <MenuItem key={session.name} value={session.sessionid}>
+                <Checkbox checked={selected.includes(session.sessionid)} />
+                <ListItemText primary={session.name} />
+              </MenuItem>
+            );
+          })}
         </Select>
-        </FormControl>
+      </FormControl>
     </div>
-    ) : null;
-    }
+  ) : null;
+}
+
+export default CheckboxSelect;

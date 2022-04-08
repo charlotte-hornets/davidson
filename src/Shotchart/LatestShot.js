@@ -13,20 +13,20 @@ export default function LatestShot(props) {
     return (
         <Grid container spacing={2}>
             <Grid item sm={6} xs={12}>
-                <Typography variant="p" style={{fontWeight: 700}}>PLAYER<br/></Typography>
-                <Typography variant="p">{player}</Typography>
+                <Typography color="text.primary" variant="p" style={{fontWeight: 700}}>PLAYER<br/></Typography>
+                <Typography color="text.primary" variant="p">{player}</Typography>
             </Grid>
             <Grid item sm={6} xs={12}>
-                <Typography variant="p" style={{fontWeight: 700}}>SHOT TYPE<br/></Typography>
-                <Typography variant="p">{shottype}</Typography>
+                <Typography color="text.primary" variant="p" style={{fontWeight: 700}}>SHOT TYPE<br/></Typography>
+                <Typography color="text.primary" variant="p">{shottype}</Typography>
             </Grid>
             <Grid item sm={6} xs={12}>
-                <Typography variant="p" style={{fontWeight: 700}}>RESULT<br/></Typography>
-                <Typography variant="p">{made}</Typography>
+                <Typography color="text.primary" variant="p" style={{fontWeight: 700}}>RESULT<br/></Typography>
+                <Typography color="text.primary" variant="p">{made}</Typography>
             </Grid>
             <Grid item sm={6} xs={12}>
-                <Typography variant="p" style={{fontWeight: 700}}>CONTEST<br/></Typography>
-                <Typography variant="p">{contest}</Typography>
+                <Typography color="text.primary" variant="p" style={{fontWeight: 700}}>CONTEST<br/></Typography>
+                <Typography color="text.primary" variant="p">{contest}</Typography>
             </Grid>
         </Grid>
     )

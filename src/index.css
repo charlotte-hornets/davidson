@@ -23,7 +23,7 @@ code {
   bottom: 0;
   margin: auto;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 100;
+  z-index: 1202;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -83,9 +83,6 @@ code {
   padding-bottom: 2vh;
 }
 
-.data-submit-button {
-  padding-top: 2vw;
-}
 
 ​.close-button:hover {
   color: #000000;
@@ -108,7 +105,7 @@ code {
   opacity: 1;
 }
 ​textarea:disabled {
-  background: white;
+  background: transparent;
   opacity: 1;
 }
 
@@ -164,17 +161,6 @@ code {
   padding-bottom: 5px;
 }
 
-.session-manager {
-  padding-left: 1vw;
-}
-
-.session-type {
-  padding-top: 1vw;
-}
-
-.session-submit-button {
-  padding-top: 1vw;
-}
 
 .loading-screen {
   position: fixed;
