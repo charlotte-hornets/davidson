@@ -2,8 +2,8 @@ import { FormControlLabel, Checkbox } from "@mui/material";
 import React from "react";
 
 interface Props  {
-    value: number,
-    change: (event: React.MouseEvent<HTMLElement>) => void
+    value: number | string,
+    change: any
     label: string,
     theme: any
 }

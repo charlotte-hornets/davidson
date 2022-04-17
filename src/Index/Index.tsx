@@ -203,7 +203,7 @@ export default function Index(props: Props) {
           <Grid container spacing={1}>
           <Grid item xs={12}><img src={props.theme.palette.mode === 'dark' ? hexcatwhite : hexcatblack} style={{maxHeight: "200px", margin: 0}}/></Grid>
           <Grid item xs={12}> <Typography variant="h2">OOPS!</Typography></Grid>
-            <Grid item xs={12}><Typography sx={{ fontSize: 16 }}>Please ensure you have filled out all required fields.<br/>Click anywhere to close this window.</Typography></Grid>
+            <Grid item xs={12}><Typography sx={{ fontSize: 20 }}>Please ensure you have filled out all required fields.<br/>Click anywhere to close this window.</Typography></Grid>
             
           </Grid>
 

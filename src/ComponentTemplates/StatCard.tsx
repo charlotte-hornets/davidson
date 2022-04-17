@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 
 type Props = {
   name: string,
-  content: HTMLElement
+  content: HTMLElement | string | number
   theme: any
 }
 

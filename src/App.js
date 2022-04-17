@@ -8,7 +8,7 @@ import {
 import Index from './Index/Index.tsx';
 import Shotchart from './Shotchart/Shotchart.js';
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import Analysis from "./Analysis/Analysis.js";
+import Analysis from "./Analysis/Analysis";
 import Navbar from "./ComponentTemplates/Navbar"
 import { theme } from "./theme.tsx";
 
