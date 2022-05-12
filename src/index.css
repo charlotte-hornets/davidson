@@ -12,6 +12,91 @@ code {
     monospace;
 }
 
+.popup {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1202;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.popup_inner {
+  background: white;
+  border-radius: 2vw;
+  width: 30%;
+  height: 80%;
+  padding: 2vw 10vw 5vw 10vw;
+  position: absolute;
+}
+
+.close-button {
+  text-align: center;
+  float: right;
+  font-size: 1.5vw;
+  font-weight: 500;
+  color: #333333;
+  cursor: pointer;
+  position: absolute;
+  right: 2vw;
+  top: 1vw;
+  border-radius: 2vw;
+  border-width: 0.5vw;
+  border-color: #000000;
+}
+
+​h2 {
+  text-align: center;
+  font-weight: 100;
+  margin-right: 4vw;
+  margin-left: 4vw;
+  color: #00788c;
+}
+
+​.popup_inner input {
+  border-radius: 20px;
+  outline: none;
+  padding-left: 0.7vw;
+  padding-right: 0.7vw;
+  text-align: left;
+}
+​.popup_inner p {
+  text-align: center;
+  font-size: 1.5vw;
+}
+.top-question {
+  display: inline-block;
+  padding-right: 2%;
+}
+
+.data-entry {
+  padding-top: 2vh;
+  max-height: 65vh;
+  overflow-y: auto;
+  padding-bottom: 2vh;
+}
+
+
+​.close-button:hover {
+  color: #000000;
+  cursor: pointer;
+}
+​.agent-input-inner input {
+  border-radius: 20px 0px 0px 20px;
+}
+​.player-input input {
+  border-radius: 20px 0px 0px 20px;
+}
+​.alertMessage {
+  text-align: center;
+}
+
 .shot-chart-court * {
   fill: transparent;
   stroke: black;
@@ -24,6 +109,7 @@ code {
 .shot-chart-court-backboard {
   z-index: 100;
 }
+
 .shot-chart-title {
   font-size: 15%;
   text-transform: uppercase;
@@ -41,11 +127,6 @@ code {
   stroke-opacity: 1;
 }
 
-svg {
-  display: block;
-  margin: auto;
-}
-
 #shot-chart-legend rect {
   fill-opacity: 0.7;
 }
@@ -53,4 +134,94 @@ svg {
 .right-corner-three-zone-text,
 .left-corner-three-zone-text {
   font-size: 0.05vw;
+}
+
+.select {
+  width: 15%;
+  display: inline-block;
+  padding-top: 0.5vw;
+  padding-right: 1vw;
+  padding-bottom: 0.5vw;
+}
+
+.settings {
+  padding-left: 1vw;
+  padding-bottom: 5px;
+}
+
+
+.loading-screen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
+
+.loading-circle {
+  position: absolute;
+  top: -25%;
+  left: 50%;
+  margin: -35px 0 0 -35px;
+}
+
+.loading-tip {
+  text-align: center;
+}
+
+#shotchart-page-content {
+  padding: 0% 2.5%;
+}
+
+circle.shot-circle:hover {
+  stroke: black;
+  stroke-width: 0.5%;
+}
+
+.team-select {
+  width: 100%;
+}
+
+#court-analysis-diagram {
+  width: 100% !important;
+}
+
+html,
+body {
+  padding: 0px;
+  margin: 0px;
+  height: 100%;
+}
+
+.green {
+  color: #90be6d !important;
+}
+
+.red {
+  color: #f94144 !important;
+}
+
+a {
+  text-decoration: none;
+}
+
+.link:hover {
+  cursor: pointer;
+  color: white;
+  text-decoration: underline;
+}
+
+.dark-link:hover {
+  cursor: pointer;
+  color: #494949;
+  text-decoration: underline;
+}
+
+.no-decor {
+  text-decoration: none !important;
+}
+
+.toolbar-button:hover {
+  cursor: pointer;
+  fill: #ac1a2f;
 }
